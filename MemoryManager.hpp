@@ -1,20 +1,22 @@
 #ifndef MEMORY_MANAGER_HPP
 #define MEMORY_MANAGER_HPP
 
-#define NUM_BLOCKS 16 // Assuming 1024 blocks in the memory pool
-#define BLOCK_SIZE 512
-
 #include <vector>
 #include "include/IMemoryManager.hpp"
 #include "BitmapMemoryManager/BitmapMemoryManager.hpp"
 
 
 void* operator new(size_t size);
-// void* operator new[](size_t size);
+void* operator new(size_t size, const std::nothrow_t&) noexcept;
+void* operator new[](size_t size);
+void* operator new[](size_t size, const std::nothrow_t&) noexcept;
 
 void operator delete(void* p);
-// void operator delete[](void* p);
-// void operator delete[](void*, size_t size);
+void operator delete(void*, size_t size);
+void operator delete(void*, size_t size, const std::nothrow_t&) noexcept;
+void operator delete[](void*, size_t size);
+void operator delete[](void* p, size_t size, const std::nothrow_t&) noexcept;
+void operator delete[](void* p);
 
 
 

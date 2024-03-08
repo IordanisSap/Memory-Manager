@@ -13,7 +13,48 @@ void* operator new(size_t size)
   return MemoryManager::getInstance().allocate(size);
 }
 
+void* operator new(size_t size, const std::nothrow_t&) noexcept
+{
+  return MemoryManager::getInstance().allocate(size);
+}
+
+void* operator new[](size_t size)
+{
+  return MemoryManager::getInstance().allocate(size);
+}
+
+void* operator new[](size_t size, const std::nothrow_t&) noexcept
+{
+  return MemoryManager::getInstance().allocate(size);
+}
+
+
 void operator delete(void* p)
+{
+  MemoryManager::getInstance().deallocate(p);
+}
+
+void operator delete(void* p, size_t size)
+{
+  MemoryManager::getInstance().deallocate(p);
+}
+
+void operator delete(void* p, size_t size, const std::nothrow_t&) noexcept
+{
+  MemoryManager::getInstance().deallocate(p);
+}
+
+void operator delete[](void* p, size_t size)
+{
+  MemoryManager::getInstance().deallocate(p);
+}
+
+void operator delete[](void* p, size_t size, const std::nothrow_t&) noexcept
+{
+  MemoryManager::getInstance().deallocate(p);
+}
+
+void operator delete[](void* p)
 {
   MemoryManager::getInstance().deallocate(p);
 }

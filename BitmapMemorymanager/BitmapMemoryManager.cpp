@@ -35,7 +35,7 @@ void *BitmapMemoryManager::allocate(size_t size)
                 bitmap[j] = true;
             }
             print_bitmap();
-            static_cast<size_t *>(arena)[index * BLOCK_SIZE] = totalSize;
+            std::memcpy(static_cast<char *>(arena) + index * BLOCK_SIZE, &totalSize, sizeof(size_t));
             return static_cast<char *>(arena) + index * BLOCK_SIZE + HEADER_SIZE;
         }
         else

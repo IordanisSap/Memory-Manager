@@ -1,15 +1,36 @@
 #include "MemoryManager.hpp"
 #include <iostream>
 
+class SmallTest
+{
+public:
+    SmallTest() {  }
+    ~SmallTest() { }
+private:
+    int b[20];
+};
+
+
+class BigTest
+{
+public:
+    BigTest() { }
+    ~BigTest() {  }
+private:
+    int b[300];
+};
+
+
 int main()
 {
-    void *test = MemoryManager::getInstance().allocate(512*1 - 4);
-    void *test2 = MemoryManager::getInstance().allocate(512*1 - 4);
-    void *test3 = MemoryManager::getInstance().allocate(512*1 - 4);
-
-    static_cast<int *>(test)[0] = 1;
-    MemoryManager::getInstance().deallocate(test);
-    void *test4 = MemoryManager::getInstance().allocate(512*1 - 4);
-
+    void* test1;
+    void* test2;
+    for (int i = 0; i < 100; ++i)
+    {
+        void *test1 = new SmallTest();
+        void *test2 = new BigTest();
+        delete test1;
+        delete test2;
+    }
     return 0;
 }

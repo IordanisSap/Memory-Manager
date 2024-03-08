@@ -21,9 +21,7 @@ void *BitmapMemoryManager::allocate(size_t size)
 {
     size_t i = 0;
     size_t totalSize = size + HEADER_SIZE;
-    std::cout << "Allocating " << totalSize << " bytes" << std::endl;
 
-    // Big block
     if (totalSize > BLOCK_SIZE)
     {
         size_t blocksNeeded = totalSize / BLOCK_SIZE + (totalSize % BLOCK_SIZE == 0 ? 0 : 1);
@@ -34,7 +32,6 @@ void *BitmapMemoryManager::allocate(size_t size)
             {
                 bitmap[j] = true;
             }
-            print_bitmap();
             std::memcpy(static_cast<char *>(arena) + index * BLOCK_SIZE, &totalSize, sizeof(size_t));
             return static_cast<char *>(arena) + index * BLOCK_SIZE + HEADER_SIZE;
         }
@@ -52,7 +49,6 @@ void *BitmapMemoryManager::allocate(size_t size)
         if (bitmap[i] == false)
         {
             bitmap[i] = true;
-            print_bitmap();
             std::memcpy(static_cast<char *>(arena) + i * BLOCK_SIZE, &totalSize, sizeof(size_t));
             return static_cast<char *>(arena) + i * BLOCK_SIZE + HEADER_SIZE;
         }
@@ -69,13 +65,11 @@ void BitmapMemoryManager::deallocate(void *p)
 
     size_t blocksNeeded = size / BLOCK_SIZE + (size % BLOCK_SIZE == 0 ? 0 : 1);
 
-    std::cout << "Deallocating " << blocksNeeded << " blocks (" << size << " bytes) starting at index " << index << std::endl;
 
     for (size_t i = index; i < index + blocksNeeded; ++i)
     {
         bitmap[i] = false;
     }
-    print_bitmap();
 }
 
 void BitmapMemoryManager::print_bitmap() const

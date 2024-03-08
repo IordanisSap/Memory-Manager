@@ -1,26 +1,34 @@
 #include "BitmapMemoryManager.hpp"
 #include <iostream>
 #include <stddef.h>
+#include <cstdint>
+#include <cstring>
 
-size_t findIndexForBlockSequence(size_t size, std::vector<bool> &bitmap, size_t start_index);
+size_t findIndexForBlockSequence(size_t size, bool* &bitmap, size_t bitmapSize);
 
 BitmapMemoryManager::BitmapMemoryManager()
 {
-    bitmap.resize(NUM_BLOCKS, false);
-    arena = new char[NUM_BLOCKS * BLOCK_SIZE];
+    this->size = NUM_BLOCKS;
+    bitmap = (bool*)malloc(NUM_BLOCKS * sizeof(bool));
+    for (size_t i = 0; i < NUM_BLOCKS; ++i)
+    {
+        bitmap[i] = false;
+    }
+    arena = malloc(NUM_BLOCKS * BLOCK_SIZE);
 }
 
 void *BitmapMemoryManager::allocate(size_t size)
 {
     size_t i = 0;
     size_t totalSize = size + HEADER_SIZE;
+    std::cout << "Allocating " << totalSize << " bytes" << std::endl;
 
     // Big block
     if (totalSize > BLOCK_SIZE)
     {
         size_t blocksNeeded = totalSize / BLOCK_SIZE + (totalSize % BLOCK_SIZE == 0 ? 0 : 1);
-        size_t index = findIndexForBlockSequence(blocksNeeded, bitmap, 0);
-        if (index < bitmap.size())
+        size_t index = findIndexForBlockSequence(blocksNeeded, bitmap, this->get_size());
+        if (index < this->get_size())
         {
             for (size_t j = index; j < index + blocksNeeded; ++j)
             {
@@ -37,16 +45,15 @@ void *BitmapMemoryManager::allocate(size_t size)
         }
     }
 
-    std::cout << "Allocating " << totalSize << " bytes" << std::endl;
 
     // Fits in 1 block
-    while (i < bitmap.size())
+    while (i < this->get_size())
     {
         if (bitmap[i] == false)
         {
             bitmap[i] = true;
             print_bitmap();
-            static_cast<size_t *>(arena)[i * BLOCK_SIZE] = totalSize;
+            std::memcpy(static_cast<char *>(arena) + i * BLOCK_SIZE, &totalSize, sizeof(size_t));
             return static_cast<char *>(arena) + i * BLOCK_SIZE + HEADER_SIZE;
         }
         ++i;
@@ -56,8 +63,8 @@ void *BitmapMemoryManager::allocate(size_t size)
 
 void BitmapMemoryManager::deallocate(void *p)
 {
-    size_t size = *static_cast<size_t *>(p - HEADER_SIZE);
-    char *start = static_cast<char *>(p - HEADER_SIZE);
+    size_t size = *reinterpret_cast<size_t *>(static_cast<char *>(p) - HEADER_SIZE);
+    char *start = static_cast<char *>(static_cast<char *>(p) - HEADER_SIZE);
     size_t index = (start - static_cast<char *>(arena)) / BLOCK_SIZE;
 
     size_t blocksNeeded = size / BLOCK_SIZE + (size % BLOCK_SIZE == 0 ? 0 : 1);
@@ -73,7 +80,7 @@ void BitmapMemoryManager::deallocate(void *p)
 
 void BitmapMemoryManager::print_bitmap() const
 {
-    for (size_t i = 0; i < bitmap.size(); ++i)
+    for (size_t i = 0; i < this->get_size(); ++i)
     {
         std::cout << bitmap[i];
     }
@@ -85,11 +92,11 @@ BitmapMemoryManager::~BitmapMemoryManager()
     delete[] static_cast<char *>(arena);
 }
 
-size_t findIndexForBlockSequence(size_t size, std::vector<bool> &bitmap, size_t start_index = 0)
+size_t findIndexForBlockSequence(size_t size, bool* &bitmap, size_t bitmapSize)
 {
-    size_t i = start_index;
+    size_t i = 0;
     size_t consecutive = 0;
-    while (i < bitmap.size())
+    while (i < bitmapSize)
     {
         if (bitmap[i] == false)
             consecutive++;

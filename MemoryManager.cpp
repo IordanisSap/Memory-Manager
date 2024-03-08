@@ -8,9 +8,21 @@
 MemoryManager MemoryManager::instance;
 IMemoryManager* MemoryManager::memory_manager = nullptr; // Initialize to nullptr
 
+void* operator new(size_t size)
+{
+  return MemoryManager::getInstance().allocate(size);
+}
+
+void operator delete(void* p)
+{
+  MemoryManager::getInstance().deallocate(p);
+}
+
+
 MemoryManager::MemoryManager()
 {
-  memory_manager = new BitmapMemoryManager();
+  memory_manager = (IMemoryManager*) malloc(sizeof(BitmapMemoryManager));
+  memory_manager = new (memory_manager) BitmapMemoryManager();
 }
 
 void* MemoryManager::allocate(size_t size)

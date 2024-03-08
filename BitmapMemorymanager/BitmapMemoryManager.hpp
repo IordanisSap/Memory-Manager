@@ -16,11 +16,12 @@ public:
     ~BitmapMemoryManager();
     virtual void* allocate(size_t size);
     virtual void deallocate(void* p);
-    void print_bitmap() const;
-  
+    void print_bitmap() const;  
+    inline size_t get_size() const { return size; }
 
   private:
-    std::vector<bool> bitmap;
+    bool* bitmap;
+    size_t size;
     void* arena;
 };
 

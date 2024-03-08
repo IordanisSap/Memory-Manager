@@ -1,4 +1,3 @@
 /.vscode
-/MemoryManager.o
-/test.exe
-/test.o
+*.o
+*.exe

@@ -9,12 +9,12 @@ size_t findIndexForBlockSequence(size_t size, bool* &bitmap, size_t bitmapSize);
 BitmapMemoryManager::BitmapMemoryManager()
 {
     this->size = NUM_BLOCKS;
-    bitmap = (bool*)malloc(NUM_BLOCKS * sizeof(bool));
-    for (size_t i = 0; i < NUM_BLOCKS; ++i)
+    bitmap = (bool*)malloc(this->size * sizeof(bool));
+    for (size_t i = 0; i < this->size; ++i)
     {
         bitmap[i] = false;
     }
-    arena = malloc(NUM_BLOCKS * BLOCK_SIZE);
+    arena = malloc(this->size * BLOCK_SIZE);
 }
 
 void *BitmapMemoryManager::allocate(size_t size)
@@ -59,6 +59,7 @@ void *BitmapMemoryManager::allocate(size_t size)
 
 void BitmapMemoryManager::deallocate(void *p)
 {
+    print_bitmap();
     size_t size = *reinterpret_cast<size_t *>(static_cast<char *>(p) - HEADER_SIZE);
     char *start = static_cast<char *>(static_cast<char *>(p) - HEADER_SIZE);
     size_t index = (start - static_cast<char *>(arena)) / BLOCK_SIZE;

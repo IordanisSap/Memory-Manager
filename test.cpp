@@ -1,6 +1,5 @@
 #include <iostream>
 #include <chrono>
-#include "MemoryManager.hpp"
 
 using namespace std::chrono;
 
@@ -28,14 +27,17 @@ private:
 int main()
 {
     auto start = high_resolution_clock::now();
-    void* test1;
-    void* test2;
-    for (int i = 0; i < 50000; ++i)
+    SmallTest **test1 = new SmallTest*[4];
+    BigTest **test2 = new BigTest*[4];
+    for (int i = 0; i < 4; ++i)
     {
-        SmallTest *test1 = new SmallTest();
-        BigTest *test2 = new BigTest();
-        delete test1;
-        delete test2;
+        test1[i] = new SmallTest();
+        test2[i] = new BigTest();
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        delete test1[i];
+        delete test2[i];
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);

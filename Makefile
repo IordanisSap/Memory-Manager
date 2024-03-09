@@ -8,13 +8,13 @@ CXXFLAGS = -g -Wall -std=c++17
 TARGET = test
 
 # Define all source files
-SRCS = test.cpp MemoryManager.cpp BitmapMemoryManager/BitmapMemoryManager.cpp
+SRCS = test.cpp MemoryManager/MemoryManager.cpp MemoryManager/BitmapMemoryManager/BitmapMemoryManager.cpp
 
 # Define the object files (automatically generated from source files)
 OBJS = $(SRCS:.cpp=.o)
 
 ifeq ($(OS),Windows_NT)
-    RM = del /Q /S *.o
+    RM = del /Q /S *.o *.exe
 else
     RM = $(OBJS) $(TARGET)
 endif

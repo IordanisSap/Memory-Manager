@@ -2,7 +2,7 @@
 #define MEMORY_MANAGER_HPP
 
 #include <vector>
-#include "include/IMemoryManager.hpp"
+#include "../include/IMemoryManager.hpp"
 #include "BitmapMemoryManager/BitmapMemoryManager.hpp"
 
 

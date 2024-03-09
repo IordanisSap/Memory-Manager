@@ -6,7 +6,7 @@
 #define HEADER_SIZE sizeof(size_t)
 
 #include <vector>
-#include "../include/IMemoryManager.hpp"
+#include "../../include/IMemoryManager.hpp"
 
 
 class BitmapMemoryManager : public IMemoryManager

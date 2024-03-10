@@ -13,8 +13,11 @@ public:
     int y=1;
 
 private:
-    int k = 0;
-    int b[25];
+    int k1 = 0;
+    int k2= 0;
+    int k3 = 0;
+
+    //int b[25];
 };
 
 class BigTest
@@ -30,19 +33,31 @@ private:
 void test(){
     MemoryManager::ptr<SmallTest> t1 = MemoryManager::Manager::getInstance().allocate<SmallTest>();
     MemoryManager::ptr<BigTest> t2 = MemoryManager::Manager::getInstance().allocate<BigTest>();
-    MemoryManager::ptr<SmallTest> t3 = MemoryManager::Manager::getInstance().allocate<SmallTest>();
-
+    // MemoryManager::ptr<SmallTest> t3 = MemoryManager::Manager::getInstance().allocate<SmallTest>();
 
     t2 = MemoryManager::Manager::getInstance().allocate<BigTest>();
     t2 = nullptr;
+    t1 = MemoryManager::Manager::getInstance().allocate<SmallTest>();
     t1 = nullptr;
-    // t1->y=5;
-    // std::cout << "t1: " << t1->y << std::endl; 
+
+}
+
+void test2(){
+    MemoryManager::ptr<SmallTest> t = MemoryManager::Manager::getInstance().allocate<SmallTest>(5);
+    MemoryManager::ptr<SmallTest> test1 = t[1];
+    MemoryManager::ptr<SmallTest> test2 = test1 + 1;
+    MemoryManager::ptr<SmallTest> test3 = test2 + 1;
+
+    t[0]->y = 0;	
+    test1->y = 1;
+    test2->y = 2;
+    test3->y = 3;
+    std::cout << t->y << std::endl;
 }
 
 int main()
 {
-    test();
+    test2();
     // test();
 
 

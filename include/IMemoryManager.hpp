@@ -7,6 +7,7 @@ class IMemoryManager
 public:
     virtual void *allocate(size_t size) = 0;
     virtual void deallocate(void *p) = 0;
+    virtual bool isAddressValid(void *p) = 0;
     virtual ~IMemoryManager() {};
 };
 

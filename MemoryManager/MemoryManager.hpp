@@ -4,37 +4,83 @@
 #include <vector>
 #include "../include/IMemoryManager.hpp"
 #include "BitmapMemoryManager/BitmapMemoryManager.hpp"
+#include <stddef.h>
+#include <cassert>
+#include <iostream>
+#include "ReferenceCounter/BlockReferenceCounter.hpp"
 
+namespace MemoryManager
+{
+  class Manager
+  {
+  public:
+    static Manager &getInstance()
+    {
+      return instance;
+    }
 
-void* operator new(size_t size);
-void* operator new(size_t size, const std::nothrow_t&) noexcept;
-void* operator new[](size_t size);
-void* operator new[](size_t size, const std::nothrow_t&) noexcept;
+    template <typename T>
+    T *allocate(size_t size)
+    {
+      void *ptr = memory_manager->allocate(size * sizeof(T));
+      for (size_t i = 0; i < size; ++i)
+      {
+        new (static_cast<T *>(ptr) + i) T();
+      }
+      return static_cast<T *>(ptr);
+    }
 
-void operator delete(void* p);
-void operator delete(void*, size_t size);
-void operator delete(void*, size_t size, const std::nothrow_t&) noexcept;
-void operator delete[](void*, size_t size);
-void operator delete[](void* p, size_t size, const std::nothrow_t&) noexcept;
-void operator delete[](void* p);
+    template <typename T>
+    T *allocate()
+    {
+      void *ptr = memory_manager->allocate(sizeof(T));
+      new (ptr) T();
+      return static_cast<T *>(ptr);
+    }
 
+    void deallocate(void *p)
+    {
+    }
 
+    void addReference(void *ptr, void *block)
+    {
+      if (block == nullptr) return;
+      if (!memory_manager->isAddressValid(block)){
+        std::cout << "Invalid block address" << std::endl;
+        return;
+      }
+      reference_counter->addReference(ptr, block);
+    }
 
-class MemoryManager {
-public:
-  static MemoryManager& getInstance() {
-    return instance;
-  }
+    void removeReference(void *ptr, void* block)
+    {
+      if (ptr == nullptr) return;
+      if (!memory_manager->isAddressValid(block)){
+        std::cout << "Invalid block address" << std::endl;
+        return;
+      }
+      bool isLastReference = reference_counter->removeReference(ptr);
+      if (isLastReference)
+      {
+        memory_manager->deallocate(block);
+      }
+    }
 
-  void* allocate(size_t size);
-  void deallocate(void* p);
+  private:
+    Manager()
+    {
+      memory_manager = new BitmapMemoryManager::MemoryManager();
+      reference_counter = new BlockReferenceCounter();
+    }
+    Manager(const Manager &) = delete;
+    Manager &operator=(const Manager &) = delete;
+    static Manager instance;
+    static IMemoryManager *memory_manager;
+    static BlockReferenceCounter *reference_counter;
+  };
 
-private:
-  MemoryManager();
-  MemoryManager(const MemoryManager&) = delete;
-  MemoryManager& operator=(const MemoryManager&) = delete;
-  static MemoryManager instance;
-  static IMemoryManager* memory_manager;
-};
-
+  Manager Manager::instance;
+  IMemoryManager *Manager::memory_manager = nullptr;
+  BlockReferenceCounter *Manager::reference_counter = nullptr;
+}
 #endif // MEMORY_MANAGER_HPP

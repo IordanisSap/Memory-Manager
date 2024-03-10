@@ -1,0 +1,9 @@
+#ifndef BLOCK_HPP
+#define BLOCK_HPP
+
+#define BLOCK_SIZE 512
+#define BLOCK_SIZE_OFFSET 0
+#define BLOCK_PTR_COUNT_OFFSET 4
+#define HEADER_SIZE 8
+
+#endif // BLOCK_HPP

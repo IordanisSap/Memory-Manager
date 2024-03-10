@@ -2,27 +2,30 @@
 #define BITMAP_MEMORY_MANAGER_HPP
 
 #define NUM_BLOCKS 32 // Assuming 1024 blocks in the memory pool
-#define BLOCK_SIZE 512
-#define HEADER_SIZE sizeof(size_t)
 
 #include <vector>
 #include "../../include/IMemoryManager.hpp"
+#include <stddef.h>
+#include "../Block.hpp"
 
-
-class BitmapMemoryManager : public IMemoryManager
+namespace BitmapMemoryManager
 {
-public:
-    BitmapMemoryManager();
-    ~BitmapMemoryManager();
-    virtual void* allocate(size_t size);
-    virtual void deallocate(void* p);
-    void print_bitmap() const;  
+  class MemoryManager : public IMemoryManager
+  {
+  public:
+    MemoryManager();
+    ~MemoryManager();
+    virtual void *allocate(size_t size);
+    virtual void deallocate(void *p);
+    virtual bool isAddressValid(void *p);
+    void print_bitmap() const;
     inline size_t get_size() const { return size; }
 
   private:
-    bool* bitmap;
+    bool *bitmap;
     size_t size;
-    void* arena;
-};
+    void *arena;
+  };
+}
 
 #endif

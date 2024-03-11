@@ -4,6 +4,7 @@
 #include "../Block.hpp"
 #include <iostream>
 #include "ReferenceCounter.hpp"
+#include <cassert>
 
 namespace MemoryManager
 {
@@ -16,16 +17,17 @@ namespace MemoryManager
         void addReference(void *ptr, void *block)
         {
             reference_counter.addReference(ptr, block);
-            *reinterpret_cast<size_t*>(static_cast<char*>(block) - HEADER_SIZE + BLOCK_PTR_COUNT_OFFSET) += 1;
+            ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
+            header->incrementRef();
         }
 
         bool removeReference(void *ptr)
         {
             void *block = reference_counter.getBlock(ptr);
-            size_t* ptr_count = reinterpret_cast<size_t*>(static_cast<char*>(block) - HEADER_SIZE + BLOCK_PTR_COUNT_OFFSET);
-            reference_counter.removeReference(ptr);
-            *ptr_count -= 1;
-            if (*ptr_count == 0)
+            assert(block != nullptr);
+            ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
+            header->decrementRef();
+            if (header->getRefCount() == 0)
             {
                 std::cout << "Deallocating block at address: " << block << std::endl;
                 return true;

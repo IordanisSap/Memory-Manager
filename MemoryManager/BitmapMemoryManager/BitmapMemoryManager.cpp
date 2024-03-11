@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <cstdint>
 #include <cstring>
+#include "../Block.hpp"
 
 size_t findIndexForBlockSequence(size_t size, bool *&bitmap, size_t bitmapSize);
 
@@ -36,8 +37,7 @@ namespace BitmapMemoryManager
                 }
                 print_bitmap();
                 size_t byteOffset = index * BLOCK_SIZE;
-                std::memcpy(static_cast<char *>(arena) + byteOffset + BLOCK_SIZE_OFFSET, &totalSize, sizeof(size_t));
-                *reinterpret_cast<size_t *>(static_cast<char *>(arena) + byteOffset + BLOCK_PTR_COUNT_OFFSET) = 0;
+                new (static_cast<char *>(arena) + byteOffset) ReferenceCountedBlockHeader(totalSize);
                 return static_cast<char *>(arena) + byteOffset + HEADER_SIZE;
             }
             else
@@ -54,8 +54,7 @@ namespace BitmapMemoryManager
             {
                 bitmap[i] = true;
                 print_bitmap();
-                std::memcpy(static_cast<char *>(arena) + i * BLOCK_SIZE, &totalSize, sizeof(size_t));
-                *reinterpret_cast<size_t *>(static_cast<char *>(arena) + i * BLOCK_SIZE + BLOCK_PTR_COUNT_OFFSET) = 0;
+                new (static_cast<char *>(arena) + i * BLOCK_SIZE) ReferenceCountedBlockHeader(totalSize);
                 return static_cast<char *>(arena) + i * BLOCK_SIZE + HEADER_SIZE;
             }
             ++i;
@@ -65,9 +64,10 @@ namespace BitmapMemoryManager
 
     void MemoryManager::deallocate(void *p)
     {
-        size_t size = *reinterpret_cast<size_t *>(static_cast<char *>(p) - HEADER_SIZE + BLOCK_SIZE_OFFSET);
-        char *start = static_cast<char *>(static_cast<char *>(p) - HEADER_SIZE);
-        size_t index = (start - static_cast<char *>(arena)) / BLOCK_SIZE;
+        char *block_start = static_cast<char *>(p) - HEADER_SIZE;
+        ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(block_start);
+        size_t size = header->getSize();
+        size_t index = (block_start - static_cast<char *>(arena)) / BLOCK_SIZE;
 
         size_t blocksNeeded = size / BLOCK_SIZE + (size % BLOCK_SIZE == 0 ? 0 : 1);
 

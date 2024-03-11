@@ -44,20 +44,26 @@ void test(){
 
 void test2(){
     MemoryManager::ptr<SmallTest> t = MemoryManager::Manager::getInstance().allocate<SmallTest>(5);
+    MemoryManager::ptr<SmallTest> t2 = MemoryManager::Manager::getInstance().allocate<SmallTest>(35);
+
     MemoryManager::ptr<SmallTest> test1 = t[1];
+    MemoryManager::ptr<SmallTest> tmp = t2[25];
+    t2 = nullptr;
     MemoryManager::ptr<SmallTest> test2 = test1 + 1;
     MemoryManager::ptr<SmallTest> test3 = test2 + 1;
 
-    t[0]->y = 0;	
-    test1->y = 1;
-    test2->y = 2;
-    test3->y = 3;
-    std::cout << t->y << std::endl;
+    test1 = test2;
+    t = nullptr;
+}
+
+void test3(){
+    MemoryManager::ptr<SmallTest> t = MemoryManager::Manager::getInstance().allocate<SmallTest>(6);
+    MemoryManager::ptr<SmallTest> t2 = t + 6;
 }
 
 int main()
 {
-    test2();
+    test3();
     // test();
 
 

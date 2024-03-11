@@ -78,9 +78,23 @@ namespace BitmapMemoryManager
         print_bitmap();
     }
 
-    bool MemoryManager::isAddressValid(void *p)
+    bool MemoryManager::isBlockValid(void *p)
     {
         return p >= arena && p < static_cast<char *>(arena) + this->get_size() * BLOCK_SIZE;
+    }
+
+    bool MemoryManager::isBlockOffsetValid(void *p, size_t offset)
+    {
+        return isBlockValid(static_cast<char *>(p)) && reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<char *>(p) - HEADER_SIZE)->getSize() > offset;
+    }
+
+    size_t MemoryManager::get_allocated_block_size(void *p)
+    {
+        if (!isBlockValid(p)){
+            throw std::runtime_error("Invalid block address");
+        }
+        ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<char *>(p) - HEADER_SIZE);
+        return header->getSize();
     }
 
     void MemoryManager::print_bitmap() const

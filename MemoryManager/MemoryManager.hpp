@@ -45,7 +45,7 @@ namespace MemoryManager
     void addReference(void *ptr, void *block)
     {
       if (block == nullptr) return;
-      if (!memory_manager->isAddressValid(block)){
+      if (!memory_manager->isBlockValid(block)){
         std::cout << "Invalid block address" << std::endl;
         return;
       }
@@ -55,7 +55,7 @@ namespace MemoryManager
     void removeReference(void *ptr, void* block)
     {
       if (ptr == nullptr) return;
-      if (!memory_manager->isAddressValid(block)){
+      if (!memory_manager->isBlockValid(block)){
         std::cout << "Invalid block address" << std::endl;
         return;
       }
@@ -64,6 +64,16 @@ namespace MemoryManager
       {
         memory_manager->deallocate(block);
       }
+    }
+
+    bool isBlockOffsetValid(void *block, size_t offset)
+    {
+      return memory_manager->isBlockOffsetValid(block, offset);
+    }
+
+    size_t get_allocated_block_size(void *p)
+    {
+      return memory_manager->get_allocated_block_size(p);
     }
 
   private:
@@ -78,6 +88,7 @@ namespace MemoryManager
     static IMemoryManager *memory_manager;
     static BlockReferenceCounter *reference_counter;
   };
+
 
   Manager Manager::instance;
   IMemoryManager *Manager::memory_manager = nullptr;

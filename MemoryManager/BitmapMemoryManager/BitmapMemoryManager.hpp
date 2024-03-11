@@ -17,7 +17,9 @@ namespace BitmapMemoryManager
     ~MemoryManager();
     virtual void *allocate(size_t size);
     virtual void deallocate(void *p);
-    virtual bool isAddressValid(void *p);
+    virtual bool isBlockValid(void *p);
+    virtual bool isBlockOffsetValid(void *p, size_t offset);
+    virtual size_t get_allocated_block_size(void *p);
     void print_bitmap() const;
     inline size_t get_size() const { return size; }
 

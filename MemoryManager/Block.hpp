@@ -1,5 +1,4 @@
-#ifndef BLOCK_HPP
-#define BLOCK_HPP
+#pragma once
 
 #define BLOCK_SIZE 512
 #define BLOCK_SIZE_OFFSET 0
@@ -19,5 +18,3 @@ private:
     size_t size;
     size_t refCount;
 };
-
-#endif // BLOCK_HPP

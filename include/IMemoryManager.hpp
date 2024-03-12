@@ -1,5 +1,5 @@
-#ifndef IMEMORY_MANAGER_HPP
-#define IMEMORY_MANAGER_HPP
+#pragma once
+
 #include <stddef.h>
 
 class IMemoryManager
@@ -13,4 +13,3 @@ public:
     virtual ~IMemoryManager() {};
 };
 
-#endif

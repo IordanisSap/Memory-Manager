@@ -1,5 +1,4 @@
-#ifndef REFERENCECOUNTER_HPP
-#define REFERENCECOUNTER_HPP
+#pragma once
 
 #include <iostream>
 #include <unordered_map>
@@ -33,4 +32,3 @@ namespace MemoryManager
 
 }
 
-#endif

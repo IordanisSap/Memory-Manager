@@ -1,5 +1,4 @@
-#ifndef MEMORY_MANAGER_HPP
-#define MEMORY_MANAGER_HPP
+#pragma once
 
 #include <vector>
 #include "../include/IMemoryManager.hpp"
@@ -90,8 +89,7 @@ namespace MemoryManager
   };
 
 
-  Manager Manager::instance;
-  IMemoryManager *Manager::memory_manager = nullptr;
-  BlockReferenceCounter *Manager::reference_counter = nullptr;
+  inline Manager Manager::instance;
+  inline IMemoryManager *Manager::memory_manager = nullptr;
+  inline BlockReferenceCounter *Manager::reference_counter = nullptr;
 }
-#endif // MEMORY_MANAGER_HPP

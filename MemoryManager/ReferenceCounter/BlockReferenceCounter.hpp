@@ -1,5 +1,4 @@
-#ifndef BLOCK_REFERENCECOUNTER_HPP
-#define BLOCK_REFERENCECOUNTER_HPP
+#pragma once
 
 #include "../Block.hpp"
 #include <iostream>
@@ -46,4 +45,3 @@ namespace MemoryManager
 
 }
 
-#endif

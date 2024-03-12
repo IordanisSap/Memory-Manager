@@ -1,12 +1,13 @@
+#pragma once
 #include <iostream>
 
 namespace MemoryManager
 {
-    void out_of_memory_error()
+    inline void out_of_memory_error()
     {
         std::cerr << "Out of memory" << std::endl;
     }
-    void throw_invalid_block_error()
+    inline void throw_invalid_block_error()
     {
         std::cerr << "Invalid block address" << std::endl;
     }

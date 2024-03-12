@@ -1,5 +1,4 @@
-#ifndef BITMAP_MEMORY_MANAGER_HPP
-#define BITMAP_MEMORY_MANAGER_HPP
+#pragma once
 
 #define NUM_BLOCKS 32 // Assuming 1024 blocks in the memory pool
 
@@ -30,4 +29,3 @@ namespace BitmapMemoryManager
   };
 }
 
-#endif

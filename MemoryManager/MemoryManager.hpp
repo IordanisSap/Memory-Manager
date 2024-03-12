@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../include/IMemoryManager.hpp"
+#include "IMemoryManager.hpp"
 #include "BitmapMemoryManager/BitmapMemoryManager.hpp"
 #include <stddef.h>
 #include <cassert>

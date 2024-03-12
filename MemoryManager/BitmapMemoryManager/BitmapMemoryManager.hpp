@@ -3,7 +3,7 @@
 #define NUM_BLOCKS 32 // Assuming 1024 blocks in the memory pool
 
 #include <vector>
-#include "../../include/IMemoryManager.hpp"
+#include "../IMemoryManager.hpp"
 #include <stddef.h>
 #include "../Block.hpp"
 

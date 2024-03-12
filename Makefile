@@ -8,7 +8,7 @@ CXXFLAGS = -g -Wall -std=c++17
 TARGET = test
 
 # Define all source files
-SRCS = test.cpp MemoryManager/BitmapMemoryManager/BitmapMemoryManager.cpp
+SRCS = test.cpp MemoryManager/BitmapMemoryManager/BitmapMemoryManager.cpp tests/test_out_of_bounds.cpp
 
 # Define the object files (automatically generated from source files)
 OBJS = $(SRCS:.cpp=.o)

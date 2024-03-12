@@ -16,7 +16,6 @@ namespace MemoryManager
             bool isBlockOffsetValid = MemoryManager::Manager::getInstance().isBlockOffsetValid(ptr, offset * sizeof(T));
             if (!isBlockOffsetValid) MemoryManager::throw_invalid_index_error<T>(ptr, offset);
             this->offset = offset;
-            std::cout << "Creating pointer to address: " << m_ptr << std::endl;
             MemoryManager::Manager::getInstance().addReference(this, m_ptr);
         }
         ~ptr()
@@ -24,7 +23,6 @@ namespace MemoryManager
             if (m_ptr == nullptr)
                 return;
             MemoryManager::Manager::getInstance().removeReference(this, m_ptr);
-            std::cout << "Deleting pointer to address: " << m_ptr << std::endl;
         }
         T *operator->() { return m_ptr + offset; }
         T &operator*() { return *(m_ptr + offset); }

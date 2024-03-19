@@ -4,18 +4,41 @@
 #include <cstdint>
 #include <cstring>
 #include "../Block.hpp"
+#include <cmath>
+#include "stdint.h"
 
-size_t findIndexForBlockSequence(size_t size, bool *&bitmap, size_t bitmapSize);
+size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSize);
+
+void set_bit(uint8_t *bitmap, size_t index, bool value)
+{
+    size_t byteIndex = index / 8;
+    size_t bitIndex = index % 8;
+    if (value)
+    {
+        bitmap[byteIndex] |= 1 << bitIndex;
+    }
+    else
+    {
+        bitmap[byteIndex] &= ~(1 << bitIndex);
+    }
+}
+
+bool get_bit(uint8_t *bitmap, size_t index)
+{
+    size_t byteIndex = index / 8;
+    size_t bitIndex = index % 8;
+    return (bitmap[byteIndex] >> bitIndex) & 1;
+}
 
 namespace BitmapMemoryManager
 {
     MemoryManager::MemoryManager()
     {
         this->size = NUM_BLOCKS;
-        bitmap = new bool[this->size];
+        bitmap = new uint8_t[this->size/8 + (this->size % 8 != 0)];
         for (size_t i = 0; i < this->size; ++i)
         {
-            bitmap[i] = false;
+            set_bit(bitmap, i, false);
         }
         arena = new char[this->size * BLOCK_SIZE];
     }
@@ -33,7 +56,7 @@ namespace BitmapMemoryManager
             {
                 for (size_t j = index; j < index + blocksNeeded; ++j)
                 {
-                    bitmap[j] = true;
+                    set_bit(bitmap, j, true);
                 }
                 print_bitmap();
                 size_t byteOffset = index * BLOCK_SIZE;
@@ -50,9 +73,9 @@ namespace BitmapMemoryManager
         // Fits in 1 block
         while (i < this->get_size())
         {
-            if (bitmap[i] == false)
+            if (!get_bit(bitmap, i))
             {
-                bitmap[i] = true;
+                set_bit(bitmap, i, true);
                 print_bitmap();
                 new (static_cast<char *>(arena) + i * BLOCK_SIZE) ReferenceCountedBlockHeader(totalSize);
                 return static_cast<char *>(arena) + i * BLOCK_SIZE + HEADER_SIZE;
@@ -73,7 +96,7 @@ namespace BitmapMemoryManager
 
         for (size_t i = index; i < index + blocksNeeded; ++i)
         {
-            bitmap[i] = false;
+            set_bit(bitmap, i, false);
         }
         print_bitmap();
     }
@@ -101,7 +124,7 @@ namespace BitmapMemoryManager
     {
         for (size_t i = 0; i < this->get_size(); ++i)
         {
-            std::cout << bitmap[i];
+            std::cout << get_bit(bitmap, i);
         }
         std::cout << std::endl;
     }
@@ -111,13 +134,13 @@ namespace BitmapMemoryManager
         delete[] static_cast<char *>(arena);
     }
 }
-size_t findIndexForBlockSequence(size_t size, bool *&bitmap, size_t bitmapSize)
+size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSize)
 {
     size_t i = 0;
     size_t consecutive = 0;
     while (i < bitmapSize)
     {
-        if (bitmap[i] == false)
+        if (!get_bit(bitmap, i))
             consecutive++;
         else
             consecutive = 0;

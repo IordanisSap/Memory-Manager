@@ -6,6 +6,7 @@
 #include "../IMemoryManager.hpp"
 #include <stddef.h>
 #include "../Block.hpp"
+#include <stdint.h>
 
 namespace BitmapMemoryManager
 {
@@ -23,7 +24,7 @@ namespace BitmapMemoryManager
     inline size_t get_size() const { return size; }
 
   private:
-    bool *bitmap;
+    uint8_t *bitmap;
     size_t size;
     void *arena;
   };

@@ -7,6 +7,7 @@
 #include <cassert>
 #include <iostream>
 #include "ReferenceCounter/BlockReferenceCounter.hpp"
+#include "Errors.hpp"
 
 namespace MemoryManager
 {
@@ -37,16 +38,11 @@ namespace MemoryManager
       return static_cast<T *>(ptr);
     }
 
-    void deallocate(void *p)
-    {
-    }
-
     void addReference(void *ptr, void *block)
     {
       if (block == nullptr) return;
       if (!memory_manager->isBlockValid(block)){
-        std::cout << "Invalid block address" << std::endl;
-        return;
+        throw_invalid_block_error();
       }
       reference_counter->addReference(ptr, block);
     }
@@ -55,10 +51,9 @@ namespace MemoryManager
     {
       if (ptr == nullptr) return;
       if (!memory_manager->isBlockValid(block)){
-        std::cout << "Invalid block address" << std::endl;
-        return;
+        throw_invalid_block_error();
       }
-      bool isLastReference = reference_counter->removeReference(ptr);
+      bool isLastReference = reference_counter->removeReference(block);
       if (isLastReference)
       {
         memory_manager->deallocate(block);

@@ -12,24 +12,25 @@ namespace MemoryManager
     public:
         ptr(T *ptr = nullptr, size_t offset = 0) : m_ptr(ptr)
         {
-            bool isBlockOffsetValid = ptr == nullptr || MemoryManager::Manager::getInstance().isBlockOffsetValid(ptr, offset * sizeof(T));
+            if (ptr == nullptr) return;
+            bool isBlockOffsetValid = MemoryManager::Manager::getInstance().isBlockOffsetValid(ptr, offset * sizeof(T));
             if (!isBlockOffsetValid)
-                MemoryManager::throw_invalid_index_error<T>(ptr, offset);
+                throw_invalid_index_error(ptr, MemoryManager::Manager::getInstance().get_allocated_block_size(ptr), sizeof(T), offset);
             this->offset = offset;
             MemoryManager::Manager::getInstance().addReference(this, m_ptr);
         }
         ptr(const ptr &other) : m_ptr(other.m_ptr)
         {
+            if (other.m_ptr == nullptr) return;
             bool isBlockOffsetValid = other.m_ptr == nullptr || MemoryManager::Manager::getInstance().isBlockOffsetValid(other.m_ptr, other.offset * sizeof(T));
             if (!isBlockOffsetValid)
-                MemoryManager::throw_invalid_index_error<T>(other.m_ptr, other.offset);
+                throw_invalid_index_error(other.m_ptr,MemoryManager::Manager::getInstance().get_allocated_block_size(other.m_ptr), sizeof(T), other.offset);
             this->offset = other.offset;
             MemoryManager::Manager::getInstance().addReference(this, m_ptr);
         }
         ~ptr()
         {
-            if (m_ptr == nullptr)
-                return;
+            if (m_ptr == nullptr) return;
             MemoryManager::Manager::getInstance().removeReference(this, m_ptr);
         }
         T *operator->() { return m_ptr + offset; }
@@ -41,11 +42,11 @@ namespace MemoryManager
         {
             if (this != &other) // Avoid self-assignment
             {
-                MemoryManager::Manager::getInstance().removeReference(this, m_ptr);
+                if (m_ptr != nullptr) MemoryManager::Manager::getInstance().removeReference(this, m_ptr);
                 m_ptr = other.m_ptr;
                 offset = other.offset;
                 MemoryManager::Manager::getInstance().addReference(this, m_ptr);
-                std::cout << "Assigning pointer to address: " << other.m_ptr << std::endl;
+                //std::cout << "Assigning pointer to address: " << other.m_ptr << std::endl;
             }
             return *this; // Return reference to the current object
         }

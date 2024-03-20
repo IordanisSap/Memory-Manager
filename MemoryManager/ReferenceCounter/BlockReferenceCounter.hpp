@@ -15,20 +15,19 @@ namespace MemoryManager
 
         void addReference(void *ptr, void *block)
         {
-            reference_counter.addReference(ptr, block);
+            //reference_counter.addReference(ptr, block);
             ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
             header->incrementRef();
         }
 
-        bool removeReference(void *ptr)
+        bool removeReference(void *block)
         {
-            void *block = reference_counter.getBlock(ptr);
             assert(block != nullptr);
             ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
             header->decrementRef();
             if (header->getRefCount() == 0)
             {
-                std::cout << "Deallocating block at address: " << block << std::endl;
+                //std::cout << "Deallocating block at address: " << block << std::endl;
                 return true;
             }
             return false;

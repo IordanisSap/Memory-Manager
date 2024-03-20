@@ -11,19 +11,19 @@ namespace MemoryManager
         ReferenceCounter() {}
         ~ReferenceCounter() {}
 
-        void addReference(void *ptr, void *block)
+        inline void addReference(void *ptr, void *block)
         {
             ptrMap[ptr] = block;
         }
 
-        void removeReference(void *ptr)
+        inline void removeReference(void *ptr)
         {
             ptrMap.erase(ptr);
         }
 
-        void *getBlock(void *ptr)
+        inline void *getBlock(void *ptr)
         {
-            return ptrMap[ptr];
+            return ptrMap.at(ptr);
         }
 
     private:

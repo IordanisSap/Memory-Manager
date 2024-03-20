@@ -6,6 +6,7 @@
 #include "../Block.hpp"
 #include <cmath>
 #include "stdint.h"
+#include "../Errors.hpp"
 
 size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSize);
 
@@ -40,7 +41,7 @@ namespace BitmapMemoryManager
         {
             set_bit(bitmap, i, false);
         }
-        arena = new char[this->size * BLOCK_SIZE];
+        arena = new uint8_t[this->size * BLOCK_SIZE];
     }
 
     void *MemoryManager::allocate(size_t size)
@@ -60,8 +61,8 @@ namespace BitmapMemoryManager
                 }
                 print_bitmap();
                 size_t byteOffset = index * BLOCK_SIZE;
-                new (static_cast<char *>(arena) + byteOffset) ReferenceCountedBlockHeader(totalSize);
-                return static_cast<char *>(arena) + byteOffset + HEADER_SIZE;
+                new (static_cast<uint8_t *>(arena) + byteOffset) ReferenceCountedBlockHeader(totalSize);
+                return static_cast<uint8_t *>(arena) + byteOffset + HEADER_SIZE;
             }
             else
             {
@@ -77,8 +78,8 @@ namespace BitmapMemoryManager
             {
                 set_bit(bitmap, i, true);
                 print_bitmap();
-                new (static_cast<char *>(arena) + i * BLOCK_SIZE) ReferenceCountedBlockHeader(totalSize);
-                return static_cast<char *>(arena) + i * BLOCK_SIZE + HEADER_SIZE;
+                new (static_cast<uint8_t *>(arena) + i * BLOCK_SIZE) ReferenceCountedBlockHeader(totalSize);
+                return static_cast<uint8_t *>(arena) + i * BLOCK_SIZE + HEADER_SIZE;
             }
             ++i;
         }
@@ -87,10 +88,10 @@ namespace BitmapMemoryManager
 
     void MemoryManager::deallocate(void *p)
     {
-        char *block_start = static_cast<char *>(p) - HEADER_SIZE;
+        uint8_t *block_start = static_cast<uint8_t *>(p) - HEADER_SIZE;
         ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(block_start);
         size_t size = header->getSize();
-        size_t index = (block_start - static_cast<char *>(arena)) / BLOCK_SIZE;
+        size_t index = (block_start - static_cast<uint8_t *>(arena)) / BLOCK_SIZE;
 
         size_t blocksNeeded = size / BLOCK_SIZE + (size % BLOCK_SIZE == 0 ? 0 : 1);
 
@@ -103,25 +104,27 @@ namespace BitmapMemoryManager
 
     bool MemoryManager::isBlockValid(void *p)
     {
-        return p >= arena && p < static_cast<char *>(arena) + this->get_size() * BLOCK_SIZE;
+        return true;
+        return p >= arena && p < static_cast<uint8_t *>(arena) + this->get_size() * BLOCK_SIZE;
     }
 
     bool MemoryManager::isBlockOffsetValid(void *p, size_t offset)
     {
-        return isBlockValid(static_cast<char *>(p)) && reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<char *>(p) - HEADER_SIZE)->getSize() - HEADER_SIZE > offset;
+        return isBlockValid(static_cast<uint8_t *>(p)) && reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<uint8_t *>(p) - HEADER_SIZE)->getSize() - HEADER_SIZE > offset;
     }
 
     size_t MemoryManager::get_allocated_block_size(void *p)
     {
         if (!isBlockValid(p)){
-            throw std::runtime_error("Invalid block address");
+            throw_invalid_block_error();
         }
-        ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<char *>(p) - HEADER_SIZE);
+        ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<uint8_t *>(p) - HEADER_SIZE);
         return header->getSize() - HEADER_SIZE;
     }
 
     void MemoryManager::print_bitmap() const
     {
+        return;
         for (size_t i = 0; i < this->get_size(); ++i)
         {
             std::cout << get_bit(bitmap, i);
@@ -131,7 +134,7 @@ namespace BitmapMemoryManager
 
     MemoryManager::~MemoryManager()
     {
-        delete[] static_cast<char *>(arena);
+        delete[] static_cast<uint8_t *>(arena);
     }
 }
 size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSize)

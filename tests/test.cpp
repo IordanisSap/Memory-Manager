@@ -7,8 +7,8 @@
 using namespace std::chrono;
 
 bool test_single(){
-    MemoryManager::ptr<SmallTest> t1 = MemoryManager::Manager::getInstance().allocate<SmallTest>();
-    MemoryManager::ptr<BigTest> t2 = MemoryManager::Manager::getInstance().allocate<BigTest>();
+    MemoryManager::ptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>();
+    MemoryManager::ptr<BigTest> t2 = MemoryManager::manager.allocate<BigTest>();
     t1->a = 3;
     t2->b[0] = 0;
     t2->b[1] = 1;
@@ -22,8 +22,8 @@ bool test_single(){
 }
 
 bool test_array(){
-    MemoryManager::ptr<SmallTest> small_array = MemoryManager::Manager::getInstance().allocate<SmallTest>(15);
-    MemoryManager::ptr<BigTest> big_array = MemoryManager::Manager::getInstance().allocate<BigTest>(10);
+    MemoryManager::ptr<SmallTest> small_array = MemoryManager::manager.allocate<SmallTest>(15);
+    MemoryManager::ptr<BigTest> big_array = MemoryManager::manager.allocate<BigTest>(10);
 
     MemoryManager::ptr<SmallTest> small0 = small_array[0];
     MemoryManager::ptr<BigTest> big0 = big_array[0];

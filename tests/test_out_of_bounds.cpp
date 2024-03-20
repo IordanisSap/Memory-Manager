@@ -9,7 +9,7 @@ using namespace std::chrono;
 
 bool test_out_of_bounds1()
 {
-    MemoryManager::ptr<int> t1 = MemoryManager::Manager::getInstance().allocate<int>(1);
+    MemoryManager::ptr<int> t1 = MemoryManager::manager.allocate<int>(1);
     t1[0]; //Okay
     
     try
@@ -26,7 +26,7 @@ bool test_out_of_bounds1()
 
 bool test_out_of_bounds2()
 {
-    MemoryManager::ptr<int> t2 = MemoryManager::Manager::getInstance().allocate<int>(10);
+    MemoryManager::ptr<int> t2 = MemoryManager::manager.allocate<int>(10);
     t2[5]; //Okay
     
     try
@@ -44,8 +44,8 @@ bool test_out_of_bounds2()
 
 bool test_out_of_bounds_general()
 {
-    MemoryManager::ptr<SmallTest> t1 = MemoryManager::Manager::getInstance().allocate<SmallTest>(10);
-    MemoryManager::ptr<BigTest> t2 = MemoryManager::Manager::getInstance().allocate<BigTest>(25);
+    MemoryManager::ptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>(10);
+    MemoryManager::ptr<BigTest> t2 = MemoryManager::manager.allocate<BigTest>(25);
 
     MemoryManager::ptr<SmallTest> t3 = t1[0];
     MemoryManager::ptr<BigTest> t4 = t2[12];

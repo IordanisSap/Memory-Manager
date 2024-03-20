@@ -14,9 +14,10 @@ namespace MemoryManager
   class Manager
   {
   public:
-    static Manager &getInstance()
+    Manager()
     {
-      return instance;
+      memory_manager = new BitmapMemoryManager::MemoryManager();
+      reference_counter = new BlockReferenceCounter();
     }
 
     template <typename T>
@@ -40,17 +41,21 @@ namespace MemoryManager
 
     void addReference(void *ptr, void *block)
     {
-      if (block == nullptr) return;
-      if (!memory_manager->isBlockValid(block)){
+      if (block == nullptr)
+        return;
+      if (!memory_manager->isBlockValid(block))
+      {
         throw_invalid_block_error();
       }
       reference_counter->addReference(ptr, block);
     }
 
-    void removeReference(void *ptr, void* block)
+    void removeReference(void *ptr, void *block)
     {
-      if (ptr == nullptr) return;
-      if (!memory_manager->isBlockValid(block)){
+      if (ptr == nullptr)
+        return;
+      if (!memory_manager->isBlockValid(block))
+      {
         throw_invalid_block_error();
       }
       bool isLastReference = reference_counter->removeReference(block);
@@ -71,20 +76,11 @@ namespace MemoryManager
     }
 
   private:
-    Manager()
-    {
-      memory_manager = new BitmapMemoryManager::MemoryManager();
-      reference_counter = new BlockReferenceCounter();
-    }
-    Manager(const Manager &) = delete;
-    Manager &operator=(const Manager &) = delete;
-    static Manager instance;
     static IMemoryManager *memory_manager;
     static BlockReferenceCounter *reference_counter;
   };
 
-
-  inline Manager Manager::instance;
+  extern Manager manager;
   inline IMemoryManager *Manager::memory_manager = nullptr;
   inline BlockReferenceCounter *Manager::reference_counter = nullptr;
 }

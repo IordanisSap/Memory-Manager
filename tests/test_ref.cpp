@@ -5,7 +5,7 @@
 
 bool test_ref_1()
 {
-    MemoryManager::ptr<int> int_array = MemoryManager::Manager::getInstance().allocate<int>(10); //First ref
+    MemoryManager::ptr<int> int_array = MemoryManager::manager.allocate<int>(10); //First ref
     MemoryManager::ptr<int> int0 = int_array[0]; //Second ref
     MemoryManager::ptr<int> int5 = int_array[5]; //Third ref
 

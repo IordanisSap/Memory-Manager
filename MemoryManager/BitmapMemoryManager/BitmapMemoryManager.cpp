@@ -102,18 +102,18 @@ namespace BitmapMemoryManager
         print_bitmap();
     }
 
-    bool MemoryManager::isBlockValid(void *p)
+    bool MemoryManager::isBlockValid(void *p) const
     {
         return true;
         return p >= arena && p < static_cast<uint8_t *>(arena) + this->get_size() * BLOCK_SIZE;
     }
 
-    bool MemoryManager::isBlockOffsetValid(void *p, size_t offset)
+    bool MemoryManager::isBlockOffsetValid(void *p, size_t offset) const
     {
         return isBlockValid(static_cast<uint8_t *>(p)) && reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<uint8_t *>(p) - HEADER_SIZE)->getSize() - HEADER_SIZE > offset;
     }
 
-    size_t MemoryManager::get_allocated_block_size(void *p)
+    size_t MemoryManager::get_allocated_block_size(void *p) const
     {
         if (!isBlockValid(p)){
             throw_invalid_block_error();

@@ -7,6 +7,7 @@ int main()
     // assert(test_ref());
     // assert(test_malloc());
     // assert(test());
-    assert(test_malloc());
+    // assert(test_malloc());
+    assert(test_compaction());
     return 0;
 }

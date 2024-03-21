@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <cassert>
 #include <iostream>
-#include "ReferenceCounter/BlockReferenceCounter.hpp"
+#include "ReferenceCounter/BlockReferenceModule.hpp"
 #include "Errors.hpp"
 
 namespace MemoryManager
@@ -17,13 +17,20 @@ namespace MemoryManager
     Manager()
     {
       memory_manager = new BitmapMemoryManager::MemoryManager();
-      reference_counter = new BlockReferenceCounter();
+      ref_module = new BlockReferenceModule();
     }
 
     template <typename T>
     T *allocate(size_t size)
     {
       void *ptr = memory_manager->allocate(size * sizeof(T));
+      if (ptr == nullptr)
+      {
+        memory_manager->compact();
+        ptr = memory_manager->allocate(size * sizeof(T));
+      }
+      if (ptr == nullptr)
+        throw_out_of_memory_error();
       for (size_t i = 0; i < size; ++i)
       {
         new (static_cast<T *>(ptr) + i) T();
@@ -35,11 +42,18 @@ namespace MemoryManager
     T *allocate()
     {
       void *ptr = memory_manager->allocate(sizeof(T));
+      if (ptr == nullptr)
+      {
+        memory_manager->compact();
+        ptr = memory_manager->allocate(sizeof(T));
+      }
+      if (ptr == nullptr)
+        throw_out_of_memory_error();
       new (ptr) T();
       return static_cast<T *>(ptr);
     }
 
-    void addReference(void *ptr, void *block)
+    void addReference(ptr *ptr, void *block)
     {
       if (block == nullptr)
         return;
@@ -47,10 +61,10 @@ namespace MemoryManager
       {
         throw_invalid_block_error();
       }
-      reference_counter->addReference(ptr, block);
+      ref_module->addReference(ptr, block);
     }
 
-    void removeReference(void *ptr, void *block)
+    void removeReference(ptr *ptr, void *block)
     {
       if (ptr == nullptr)
         return;
@@ -58,7 +72,7 @@ namespace MemoryManager
       {
         throw_invalid_block_error();
       }
-      bool isLastReference = reference_counter->removeReference(block);
+      bool isLastReference = ref_module->removeReference(ptr, block);
       if (isLastReference)
       {
         memory_manager->deallocate(block);
@@ -77,10 +91,10 @@ namespace MemoryManager
 
   private:
     static IMemoryManager *memory_manager;
-    static BlockReferenceCounter *reference_counter;
+    static BlockReferenceModule *ref_module;
   };
 
   extern Manager manager;
   inline IMemoryManager *Manager::memory_manager = nullptr;
-  inline BlockReferenceCounter *Manager::reference_counter = nullptr;
+  inline BlockReferenceModule *Manager::ref_module = nullptr;
 }

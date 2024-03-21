@@ -1,20 +1,24 @@
 #pragma once
 
+#include <list>
+#include "ptr.hpp"
+
 #define BLOCK_SIZE 512
-#define BLOCK_SIZE_OFFSET 0
-#define BLOCK_PTR_COUNT_OFFSET 4
 #define HEADER_SIZE sizeof(ReferenceCountedBlockHeader)
 
 class ReferenceCountedBlockHeader
 {
 public:
-    ReferenceCountedBlockHeader(size_t size) : size(size), refCount(0) {}
+    ReferenceCountedBlockHeader(size_t size) : size(size){}
     ~ReferenceCountedBlockHeader() {}
-    inline void incrementRef() {this->refCount += 1;}
-    inline bool decrementRef(){return --this->refCount == 0;}
     inline size_t getSize() const {return size;}
-    inline size_t getRefCount() const {return refCount;}
+    inline bool hasRef() const {return !refs.empty();}
+    inline ptr *getBlockPtr() const {return refs.front();}
+    inline void addBlockPtr(ptr *ptr) {refs.push_front(ptr);}
+    inline void removeBlockPtr(ptr *ptr) {refs.remove(ptr);}
+    inline std::list<ptr *> getRefs() const {return refs;}
+
 private:
     size_t size;
-    size_t refCount;
+    std::list<ptr *> refs;
 };

@@ -1,13 +1,13 @@
-#include "../MemoryManager/ptr.hpp"
+#include "../MemoryManager/GCptr.hpp"
 #include "../MemoryManager/MemoryManager.hpp"
 #include "test.hpp"
 
 
 bool test_ref_1()
 {
-    MemoryManager::ptr<int> int_array = MemoryManager::manager.allocate<int>(10); //First ref
-    MemoryManager::ptr<int> int0 = int_array[0]; //Second ref
-    MemoryManager::ptr<int> int5 = int_array[5]; //Third ref
+    MemoryManager::GCptr<int> int_array = MemoryManager::manager.allocate<int>(10); //First ref
+    MemoryManager::GCptr<int> int0 = int_array[0]; //Second ref
+    MemoryManager::GCptr<int> int5 = int_array[5]; //Third ref
 
     int_array = nullptr; //First ref removed
 

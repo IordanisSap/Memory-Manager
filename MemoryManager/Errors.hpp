@@ -3,6 +3,7 @@
 
 #define throw_invalid_index_error(msg, block_size, size, offset) throw_error(invalid_index_error, __FILE__, __LINE__, msg, block_size, size, offset)
 #define throw_invalid_block_error() throw_error(invalid_block_error, __FILE__, __LINE__)
+#define throw_out_of_memory_error() throw_error(out_of_memory_error, __FILE__, __LINE__)
 
 template<typename Func, typename... Args>
 inline void throw_error(Func func,const char* file, long line, Args&&... args) {
@@ -23,7 +24,7 @@ inline void invalid_block_error()
 
 inline void invalid_index_error(void *ptr, size_t block_size, size_t sizeOfObj, size_t offset)
 {
-    throw std::runtime_error("Invalid block offset " + std::to_string(offset) +
-                             "(" + std::to_string(offset * sizeOfObj) + " bytes)" + " for block with size " +
-                             std::to_string(block_size / sizeOfObj) + "(" + std::to_string(block_size) + ") bytes.");
+    // throw std::runtime_error("Invalid block offset " + std::to_string(offset) +
+    //                          "(" + std::to_string(offset * sizeOfObj) + " bytes)" + " for block with size " +
+    //                          std::to_string(block_size / sizeOfObj) + "(" + std::to_string(block_size) + ") bytes.");
 }

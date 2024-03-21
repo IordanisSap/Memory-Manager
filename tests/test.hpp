@@ -27,3 +27,4 @@ bool test_malloc();
 bool test_out_of_bounds();
 bool test();
 bool test_ref();
+bool test_compaction();

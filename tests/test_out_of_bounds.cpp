@@ -1,4 +1,4 @@
-#include "../MemoryManager/ptr.hpp"
+#include "../MemoryManager/GCptr.hpp"
 #include "../MemoryManager/MemoryManager.hpp"
 #include <chrono>
 #include <iostream>
@@ -9,7 +9,7 @@ using namespace std::chrono;
 
 bool test_out_of_bounds1()
 {
-    MemoryManager::ptr<int> t1 = MemoryManager::manager.allocate<int>(1);
+    MemoryManager::GCptr<int> t1 = MemoryManager::manager.allocate<int>(1);
     t1[0]; //Okay
     
     try
@@ -26,7 +26,7 @@ bool test_out_of_bounds1()
 
 bool test_out_of_bounds2()
 {
-    MemoryManager::ptr<int> t2 = MemoryManager::manager.allocate<int>(10);
+    MemoryManager::GCptr<int> t2 = MemoryManager::manager.allocate<int>(10);
     t2[5]; //Okay
     
     try
@@ -44,11 +44,11 @@ bool test_out_of_bounds2()
 
 bool test_out_of_bounds_general()
 {
-    MemoryManager::ptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>(10);
-    MemoryManager::ptr<BigTest> t2 = MemoryManager::manager.allocate<BigTest>(25);
+    MemoryManager::GCptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>(10);
+    MemoryManager::GCptr<BigTest> t2 = MemoryManager::manager.allocate<BigTest>(25);
 
-    MemoryManager::ptr<SmallTest> t3 = t1[0];
-    MemoryManager::ptr<BigTest> t4 = t2[12];
+    MemoryManager::GCptr<SmallTest> t3 = t1[0];
+    MemoryManager::GCptr<BigTest> t4 = t2[12];
 
     t3->a = 5;
 
@@ -58,7 +58,7 @@ bool test_out_of_bounds_general()
 
     try
     {
-        MemoryManager::ptr<SmallTest> t5 = t1[10]; // Should fail
+        MemoryManager::GCptr<SmallTest> t5 = t1[10]; // Should fail
         return false;
     }
     catch (std::runtime_error &e)

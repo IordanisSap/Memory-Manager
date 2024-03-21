@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include <cassert>
 #include <iostream>
-#include "ReferenceCounter/BlockReferenceModule.hpp"
+#include "ReferenceModule/BlockReferenceModule.hpp"
 #include "Errors.hpp"
 
 namespace MemoryManager
@@ -91,10 +91,10 @@ namespace MemoryManager
 
   private:
     static IMemoryManager *memory_manager;
-    static BlockReferenceModule *ref_module;
+    static IReferenceModule *ref_module;
   };
 
   extern Manager manager;
   inline IMemoryManager *Manager::memory_manager = nullptr;
-  inline BlockReferenceModule *Manager::ref_module = nullptr;
+  inline IReferenceModule *Manager::ref_module = nullptr;
 }

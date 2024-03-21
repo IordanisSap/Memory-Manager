@@ -8,7 +8,10 @@
 #include "stdint.h"
 #include "../Errors.hpp"
 
-#define LOGGING true
+#include <bit>
+
+#define LOGGING false
+#define get_num_of_set_bits(byte) 
 
 size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSize);
 
@@ -31,6 +34,18 @@ bool get_bit(uint8_t *bitmap, size_t index)
     size_t byteIndex = index / 8;
     size_t bitIndex = index % 8;
     return (bitmap[byteIndex] >> bitIndex) & 1;
+}
+
+
+inline unsigned char num_of_nonzero_bits(uint8_t byte)
+{
+    unsigned char count = 0;
+    while (byte)
+    {
+        count += byte & 1;
+        byte >>= 1;
+    }
+    return count;
 }
 
 namespace BitmapMemoryManager
@@ -128,7 +143,8 @@ namespace BitmapMemoryManager
     {
         size_t i = 0;
         std::byte *pos = arena;
-        while (i < this->get_size())
+        size_t arenaBlockSize = this->get_size();
+        while (i < arenaBlockSize)
         {
             if (!get_bit(bitmap, i))
             {
@@ -161,12 +177,12 @@ namespace BitmapMemoryManager
                 }
                 pos += blocksNeeded * BLOCK_SIZE;
                 i += blocksNeeded;
+                if (LOGGING) print_bitmap();
                 continue;
             }
             pos += BLOCK_SIZE;
             i++;
         }
-        print_bitmap();
         return arena;
     }
 

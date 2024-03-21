@@ -2,7 +2,7 @@
 CXX = g++
 
 # Define C++ flags (feel free to customize)
-CXXFLAGS = -g -pg  -std=c++17
+CXXFLAGS = -g -pg  -std=c++20
 
 # Define the target executable name
 TARGET = test

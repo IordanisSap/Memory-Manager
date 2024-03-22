@@ -1,7 +1,7 @@
 #pragma once
 
 #include <list>
-#include "ptr.hpp"
+#include "ptr/ptr.hpp"
 
 #define BLOCK_SIZE 512
 #define HEADER_SIZE sizeof(ReferenceCountedBlockHeader)

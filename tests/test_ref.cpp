@@ -1,4 +1,4 @@
-#include "../MemoryManager/GCptr.hpp"
+#include "../MemoryManager/ptr/GCptr.hpp"
 #include "../MemoryManager/MemoryManager.hpp"
 #include "test.hpp"
 

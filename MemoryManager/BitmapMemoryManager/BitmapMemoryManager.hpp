@@ -5,7 +5,7 @@
 #include <vector>
 #include "../IMemoryManager.hpp"
 #include <stddef.h>
-#include "../Block.hpp"
+#include "../BlockHeader.hpp"
 #include <stdint.h>
 #include <cstddef>
 

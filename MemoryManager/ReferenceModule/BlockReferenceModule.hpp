@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Block.hpp"
+#include "../BlockHeader.hpp"
 #include <iostream>
 #include "IReferenceModule.hpp"
 #include <cassert>
@@ -10,9 +10,6 @@ namespace MemoryManager
     class BlockReferenceModule : public IReferenceModule
     {
     public:
-        BlockReferenceModule() {}
-        ~BlockReferenceModule() {}
-
         virtual void addReference(ptr *ptr, void *block)
         {
             ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);

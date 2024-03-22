@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <cstdint>
 #include <cstring>
-#include "../Block.hpp"
+#include "../BlockHeader.hpp"
 #include <cmath>
 #include "stdint.h"
 #include "../Errors.hpp"

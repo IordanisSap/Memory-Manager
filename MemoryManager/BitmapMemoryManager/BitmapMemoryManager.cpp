@@ -11,7 +11,8 @@
 #include <bit>
 
 #define LOGGING false
-#define get_num_of_set_bits(byte) 
+#define get_num_of_set_bits(byte) std::popcount(byte) 
+#define get_num_of_consecutive_zero_bits(byte) std::countr_zero(byte)
 
 size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSize);
 
@@ -90,14 +91,19 @@ namespace BitmapMemoryManager
         // Fits in 1 block
         while (i < this->get_size())
         {
-            if (!get_bit(bitmap, i))
-            {
-                set_bit(bitmap, i, true);
-                print_bitmap();
-                new (arena + i * BLOCK_SIZE) ReferenceCountedBlockHeader(totalSize);
-                return arena + i * BLOCK_SIZE + HEADER_SIZE;
+            // auto tmp = get_num_of_set_bits(bitmap[i]);
+            if (get_num_of_set_bits(bitmap[i]) == 8) {
+                i += 8;
+                continue;
             }
-            ++i;
+            while (get_bit(bitmap, i))
+            {
+                ++i;
+            }
+            set_bit(bitmap, i, true);
+            print_bitmap();
+            new (arena + i * BLOCK_SIZE) ReferenceCountedBlockHeader(totalSize);
+            return arena + i * BLOCK_SIZE + HEADER_SIZE;
         }
         return nullptr;
     }
@@ -207,6 +213,21 @@ size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSiz
 {
     size_t i = 0;
     size_t consecutive = 0;
+    while (i < bitmapSize - 7)
+    {
+        if (get_num_of_consecutive_zero_bits(bitmap[i]) < size - consecutive && get_bit(bitmap,i+7)) { // Not enough consecutive zeros in the byte and last byte is not empty, so it cant be connected to the next byte
+            i += 8;
+            consecutive = 0;
+            continue;
+        }
+        if (!get_bit(bitmap, i))
+            consecutive++;
+        else
+            consecutive = 0;
+        if (consecutive == size)
+            return i - size + 1;
+        i++;
+    }
     while (i < bitmapSize)
     {
         if (!get_bit(bitmap, i))
@@ -217,5 +238,6 @@ size_t findIndexForBlockSequence(size_t size, uint8_t *&bitmap, size_t bitmapSiz
             return i - size + 1;
         i++;
     }
+    
     return SIZE_MAX;
 }

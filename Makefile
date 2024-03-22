@@ -2,7 +2,8 @@
 CXX = g++
 
 # Define C++ flags (feel free to customize)
-CXXFLAGS = -g -pg  -std=c++20
+CXXFLAGS =   -std=c++20
+
 
 # Define the target executable name
 TARGET = test
@@ -14,9 +15,9 @@ SRCS = test.cpp MemoryManager/MemoryManager.cpp MemoryManager/BitmapMemoryManage
 OBJS = $(SRCS:.cpp=.o)
 
 ifeq ($(OS),Windows_NT)
-    RM = del /Q /S *.o *.exe
+    RM = rm -f $(OBJS) $(TARGET)
 else
-    RM = $(OBJS) $(TARGET)
+    RM = rm -f $(OBJS) $(TARGET)
 endif
 
 .PHONY: all clean

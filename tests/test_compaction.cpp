@@ -7,17 +7,7 @@
 
 #include <bit>
 
-#define test_count 1020
-
-void test_small()
-{
-    MemoryManager::GCptr<int> int1 = MemoryManager::manager.allocate<int>();
-    MemoryManager::GCptr<int> int2 = MemoryManager::manager.allocate<int>();
-    MemoryManager::GCptr<int> int3 = MemoryManager::manager.allocate<int>();
-
-    int2 = nullptr;
-    MemoryManager::GCptr<int> int4 = MemoryManager::manager.allocate<int>(165);
-}
+#define test_count 32
 
 using namespace std::chrono;
 
@@ -28,22 +18,17 @@ void test_normal()
 
     auto start = high_resolution_clock::now();
 
-    for (size_t i = 0; i < 100; i++)
+    MemoryManager::GCptr<SmallTest> arr[test_count];
+    for (size_t i = 0; i < test_count; i++)
     {
-        MemoryManager::GCptr<SmallTest> arr[test_count];
-        for (size_t i = 0; i < test_count; i++)
-        {
-            arr[i] = MemoryManager::manager.allocate<SmallTest>();
-        }
-        // exit(0);
-        for (size_t i = 0; i < test_count; i++)
-        {
-            if (dist(rng))
-                arr[i] = nullptr;
-        }
-
-        // MemoryManager::GCptr<SmallTest> big = MemoryManager::manager.allocate<SmallTest>(800);
+        arr[i] = MemoryManager::manager.allocate<SmallTest>();
     }
+    for (size_t i = 0; i < test_count; i++)
+    {
+        if (dist(rng))
+            arr[i] = nullptr;
+    }
+    MemoryManager::GCptr<SmallTest> big = MemoryManager::manager.allocate<SmallTest>(400);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     std::cout << "Custom malloc time: " << duration.count() << " microseconds" << std::endl;
@@ -56,22 +41,25 @@ void test_normal2()
 
     auto start = high_resolution_clock::now();
 
-
-    for (size_t i = 0; i < 1; i++)
+    SmallTest *arr[test_count];
+    for (size_t i = 0; i < test_count; i++)
     {
-        SmallTest *arr[test_count];
-        for (size_t i = 0; i < test_count; i++)
-        {
-            arr[i] = new SmallTest();
-        }
-        for (size_t i = 0; i < test_count; i++)
-        {
-            if (dist(rng))
-                delete arr[i];
-        }
-
-        SmallTest *big = new SmallTest[800];
+        arr[i] = new SmallTest();
     }
+    for (size_t i = 0; i < test_count; i++)
+    {
+        if (dist(rng))
+        {
+            delete arr[i];
+            arr[i] = nullptr;
+        }
+        else
+        {
+            delete arr[i];
+        }
+    }
+    SmallTest *big = new SmallTest[800];
+    delete[] big;
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
     std::cout << "Custom malloc time: " << duration.count() << " microseconds" << std::endl;
@@ -80,6 +68,6 @@ void test_normal2()
 bool test_compaction()
 {
     test_normal();
-    //test_normal2();
+    test_normal2();
     return true;
 }

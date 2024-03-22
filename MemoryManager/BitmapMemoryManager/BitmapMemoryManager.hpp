@@ -1,6 +1,6 @@
 #pragma once
 
-#define NUM_BLOCKS 1024
+#define NUM_BLOCKS 32
 
 #include <vector>
 #include "../IMemoryManager.hpp"

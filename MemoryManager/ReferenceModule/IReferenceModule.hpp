@@ -9,9 +9,9 @@ namespace MemoryManager
     class IReferenceModule
     {
     public:
-        virtual void addReference(ptr *ptr, void *block) = 0;
-        virtual bool removeReference(ptr *ptr, void *block) = 0;
-        virtual std::list<ptr *> getRefs(void *block) = 0;
+        virtual void add_reference(ptr *ptr, void *block) = 0;
+        virtual bool remove_reference(ptr *ptr, void *block) = 0;
+        virtual std::list<ptr *> get_references(void *block) = 0;
     };
 }
 

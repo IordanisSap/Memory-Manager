@@ -42,5 +42,6 @@ bool test_array(){
 
 bool test()
 {
+    std::cout << "----------Running general tests----------" << std::endl;
     return test_single() && test_array();
 }

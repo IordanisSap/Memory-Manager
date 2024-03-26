@@ -8,6 +8,7 @@
 #include <iostream>
 #include "ReferenceModule/BlockReferenceModule.hpp"
 #include "Errors.hpp"
+#include "../ConfigParser.hpp"
 
 namespace MemoryManager
 {
@@ -53,48 +54,57 @@ namespace MemoryManager
       return static_cast<T *>(ptr);
     }
 
-    void addReference(ptr *ptr, void *block)
+    void add_reference(ptr *ptr, void *block)
     {
       if (block == nullptr)
         return;
-      if (!memory_manager->isBlockValid(block))
+      if (!memory_manager->is_valid_object(block))
       {
         throw_invalid_block_error();
       }
-      ref_module->addReference(ptr, block);
+      ref_module->add_reference(ptr, block);
     }
 
-    void removeReference(ptr *ptr, void *block)
+    void remove_reference(ptr *ptr, void *block)
     {
       if (ptr == nullptr)
         return;
-      if (!memory_manager->isBlockValid(block))
+      if (!memory_manager->is_valid_object(block))
       {
         throw_invalid_block_error();
       }
-      bool isLastReference = ref_module->removeReference(ptr, block);
+      bool isLastReference = ref_module->remove_reference(ptr, block);
       if (isLastReference)
       {
         memory_manager->deallocate(block);
       }
     }
 
-    bool isBlockOffsetValid(void *block, size_t offset)
+    bool is_block_offset_valid(void *block, size_t offset)
     {
-      return memory_manager->isBlockOffsetValid(block, offset);
+      return memory_manager->is_valid_object_offset(block, offset);
     }
 
-    size_t get_allocated_block_size(void *p)
+    size_t get_object_size(void *p)
     {
-      return memory_manager->get_allocated_block_size(p);
+      return memory_manager->get_object_size(p);
+    }
+
+    void parse_config(const char *config_file)
+    {
+      bool parsed = config_parser.parse(config_file);
+      assert(parsed);
+      memory_manager->load_config(&config_parser);
     }
 
   private:
     static IMemoryManager *memory_manager;
     static IReferenceModule *ref_module;
+    static ConfigParser config_parser;
   };
 
   extern Manager manager;
   inline IMemoryManager *Manager::memory_manager = nullptr;
   inline IReferenceModule *Manager::ref_module = nullptr;
+  inline ConfigParser Manager::config_parser;
 }

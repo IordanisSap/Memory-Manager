@@ -10,23 +10,23 @@ namespace MemoryManager
     class BlockReferenceModule : public IReferenceModule
     {
     public:
-        virtual void addReference(ptr *ptr, void *block)
+        virtual void add_reference(ptr *ptr, void *block)
         {
             ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
-            header->addBlockPtr(ptr);
+            header->add_block_ptr(ptr);
         }
 
-        virtual bool removeReference(ptr *ptr, void *block)
+        virtual bool remove_reference(ptr *ptr, void *block)
         {
             assert(block != nullptr);
             ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
-            header->removeBlockPtr(ptr);
-            return !header->hasRef();
+            header->remove_block_ptr(ptr);
+            return !header->has_ref();
         }
-        virtual std::list<ptr *> getRefs(void *block)
+        virtual std::list<ptr *> get_references(void *block)
         {
             ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader*>(static_cast<char *>(block) - HEADER_SIZE);
-            return header->getRefs();
+            return header->get_references();
         }
     };
 }

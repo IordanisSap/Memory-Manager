@@ -26,5 +26,6 @@ bool test_ref_1()
 
 bool test_ref()
 {
+    std::cout << "----------Running reference tests----------" << std::endl;
     return test_ref_1();
 }

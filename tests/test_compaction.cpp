@@ -11,7 +11,7 @@
 
 using namespace std::chrono;
 
-void test_normal()
+void test_allocator()
 {
     std::mt19937 rng(5);
     std::uniform_int_distribution<int> dist(0, 1); // Range from 1 to 100
@@ -31,10 +31,10 @@ void test_normal()
     MemoryManager::GCptr<SmallTest> big = MemoryManager::manager.allocate<SmallTest>(400);
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "Custom malloc time: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "Custom allocator time: " << duration.count() << " microseconds" << std::endl;
 }
 
-void test_normal2()
+void test_normal()
 {
     std::mt19937 rng(5);
     std::uniform_int_distribution<int> dist(0, 1); // Range from 1 to 100
@@ -62,12 +62,12 @@ void test_normal2()
     delete[] big;
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "Custom malloc time: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "Malloc time: " << duration.count() << " microseconds" << std::endl;
 }
 
 bool test_compaction()
 {
+    test_allocator();
     test_normal();
-    test_normal2();
     return true;
 }

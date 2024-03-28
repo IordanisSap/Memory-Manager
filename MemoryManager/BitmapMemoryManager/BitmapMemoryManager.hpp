@@ -21,6 +21,7 @@ namespace BitmapMemoryManager
     virtual size_t get_object_size(void *p) const;
     virtual void load_config(ConfigParser *config_parser);
     virtual void *compact();
+    void init();
     void print_bitmap() const;
     inline size_t get_size() const { return size; }
 

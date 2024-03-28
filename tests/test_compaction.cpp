@@ -67,6 +67,7 @@ void test_normal()
 
 bool test_compaction()
 {
+    std::cout << "----------Running compaction tests----------" << std::endl;
     test_allocator();
     test_normal();
     return true;

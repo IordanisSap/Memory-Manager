@@ -11,7 +11,7 @@
 #include <bit>
 
 #define LOGGING false
-#define get_num_of_set_bits(byte) std::popcount(byte) 
+#define get_num_of_set_bits(byte) std::popcount(byte)
 #define get_num_of_consecutive_zero_bits(byte) std::countr_zero(byte)
 
 size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitmapSize);
@@ -37,7 +37,6 @@ bool get_bit(uint8_t *bitmap, size_t index)
     return (bitmap[byteIndex] >> bitIndex) & 1;
 }
 
-
 inline unsigned char num_of_nonzero_bits(uint8_t byte)
 {
     unsigned char count = 0;
@@ -52,6 +51,11 @@ inline unsigned char num_of_nonzero_bits(uint8_t byte)
 namespace BitmapMemoryManager
 {
     MemoryManager::MemoryManager()
+    {
+        init();
+    }
+
+    void MemoryManager::init()
     {
         bitmap = new uint8_t[this->size / 8 + (this->size % 8 != 0)];
         for (size_t i = 0; i < this->size; ++i)
@@ -91,7 +95,8 @@ namespace BitmapMemoryManager
         while (i < this->get_size())
         {
             // auto tmp = get_num_of_set_bits(bitmap[i]);
-            if (get_num_of_set_bits(bitmap[i]) == 8) {
+            if (get_num_of_set_bits(bitmap[i]) == 8)
+            {
                 i += 8;
                 continue;
             }
@@ -149,14 +154,15 @@ namespace BitmapMemoryManager
         auto block_size_str = config_parser->get("BLOCK_SIZE");
         if (block_size_str != "")
         {
-            this->size = std::stoi(block_size_str);
+            this->block_size = std::stoi(block_size_str);
         }
 
         auto block_num_str = config_parser->get("BLOCK_NUM");
         if (block_num_str != "")
         {
-            this->block_size = std::stoi(block_num_str);
+            this->size = std::stoi(block_num_str);
         }
+        init();
     }
 
     void *MemoryManager::compact()
@@ -176,11 +182,10 @@ namespace BitmapMemoryManager
                 ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(arena + i * this->block_size);
                 size_t size = header->get_size();
                 std::list<ptr *> references = header->get_references();
-                
-                *reinterpret_cast<ReferenceCountedBlockHeader *>(pos) = std::move(*header);
-                
 
-                for (auto& ref : references)
+                *reinterpret_cast<ReferenceCountedBlockHeader *>(pos) = std::move(*header);
+
+                for (auto &ref : references)
                 {
                     ref->block = pos + HEADER_SIZE;
                 }
@@ -197,7 +202,8 @@ namespace BitmapMemoryManager
                 }
                 pos += blocksNeeded * this->block_size;
                 i += blocksNeeded;
-                if (LOGGING) print_bitmap();
+                if (LOGGING)
+                    print_bitmap();
                 continue;
             }
             pos += this->block_size;
@@ -229,7 +235,8 @@ size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitma
     size_t consecutive = 0;
     while (i < bitmapSize - 7)
     {
-        if (get_num_of_consecutive_zero_bits(bitmap[i]) < size - consecutive && get_bit(bitmap,i+7)) { // Not enough consecutive zeros in the byte and last byte is not empty, so it cant be connected to the next byte
+        if (get_num_of_consecutive_zero_bits(bitmap[i]) < size - consecutive && get_bit(bitmap, i + 7))
+        { // Not enough consecutive zeros in the byte and last byte is not empty, so it cant be connected to the next byte
             i += 8;
             consecutive = 0;
             continue;
@@ -252,6 +259,6 @@ size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitma
             return i - size + 1;
         i++;
     }
-    
+
     return SIZE_MAX;
 }

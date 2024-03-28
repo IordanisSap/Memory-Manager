@@ -54,6 +54,15 @@ namespace MemoryManager
       return static_cast<T *>(ptr);
     }
 
+    template <typename T>
+    void deallocate(T *p)
+    {
+      if (p == nullptr)
+        return;
+      p->~T();
+      memory_manager->deallocate(p);
+    }
+
     void add_reference(ptr *ptr, void *block)
     {
       if (block == nullptr)

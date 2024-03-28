@@ -181,7 +181,7 @@ namespace BitmapMemoryManager
             {
                 ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(arena + i * this->block_size);
                 size_t size = header->get_size();
-                std::list<ptr *> references = header->get_references();
+                auto references = header->get_references();
 
                 *reinterpret_cast<ReferenceCountedBlockHeader *>(pos) = std::move(*header);
 

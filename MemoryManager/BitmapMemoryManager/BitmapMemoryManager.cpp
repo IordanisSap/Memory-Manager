@@ -52,11 +52,6 @@ namespace BitmapMemoryManager
 {
     MemoryManager::MemoryManager()
     {
-        init();
-    }
-
-    void MemoryManager::init()
-    {
         bitmap = new uint8_t[this->size / 8 + (this->size % 8 != 0)];
         for (size_t i = 0; i < this->size; ++i)
         {
@@ -147,22 +142,6 @@ namespace BitmapMemoryManager
         }
         ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<std::byte *>(p) - HEADER_SIZE);
         return header->get_size() - HEADER_SIZE;
-    }
-
-    void MemoryManager::load_config(ConfigParser *config_parser)
-    {
-        auto block_size_str = config_parser->get("BLOCK_SIZE");
-        if (block_size_str != "")
-        {
-            this->block_size = std::stoi(block_size_str);
-        }
-
-        auto block_num_str = config_parser->get("BLOCK_NUM");
-        if (block_num_str != "")
-        {
-            this->size = std::stoi(block_num_str);
-        }
-        init();
     }
 
     void *MemoryManager::compact()

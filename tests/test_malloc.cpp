@@ -74,7 +74,7 @@ void test_normal_malloc_array()
 
 bool test_malloc()
 {
-    std::cout << "----------Running malloc tests----------" << std::endl;
+    std::cout << "----------Running malloc tests-------------" << std::endl;
     test_normal_malloc();
     test_custom_allocator();
     test_normal_malloc_array();

@@ -70,5 +70,6 @@ bool test_out_of_bounds_general()
 
 bool test_out_of_bounds()
 {
+    std::cout << "----------Running out of bounds tests-------------" << std::endl;
     return test_out_of_bounds1() && test_out_of_bounds2() && test_out_of_bounds_general();
 }

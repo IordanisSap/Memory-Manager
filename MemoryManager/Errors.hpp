@@ -24,7 +24,7 @@ inline void invalid_block_error()
 
 inline void invalid_index_error(void *ptr, size_t block_size, size_t sizeOfObj, size_t offset)
 {
-    throw std::runtime_error("Invalid block offset " + std::to_string(offset) +
+    throw std::runtime_error("Out of bounds: Invalid block offset " + std::to_string(offset) +
                              "(" + std::to_string(offset * sizeOfObj) + " bytes)" + " for block with size " +
                              std::to_string(block_size / sizeOfObj) + "(" + std::to_string(block_size) + ") bytes.");
 }

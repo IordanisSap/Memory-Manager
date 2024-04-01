@@ -6,6 +6,7 @@
 #include "../BlockHeader.hpp"
 #include <stdint.h>
 #include <cstddef>
+#include "../../config.hpp"
 
 namespace BitmapMemoryManager
 {
@@ -19,16 +20,14 @@ namespace BitmapMemoryManager
     virtual bool is_valid_object(void *p) const;
     virtual bool is_valid_object_offset(void *p, size_t offset) const;
     virtual size_t get_object_size(void *p) const;
-    virtual void load_config(ConfigParser *config_parser);
     virtual void *compact();
-    void init();
     void print_bitmap() const;
     inline size_t get_size() const { return size; }
 
   private:
     uint8_t *bitmap;
-    size_t size = 32;
-    size_t block_size = 256;
+    size_t size = BLOCK_NUM;
+    size_t block_size = BLOCK_SIZE;
     std::byte *arena;
   };
 }

@@ -8,7 +8,6 @@
 #include <iostream>
 #include "ReferenceModule/BlockReferenceModule.hpp"
 #include "Errors.hpp"
-#include "../ConfigParser.hpp"
 
 namespace MemoryManager
 {
@@ -99,21 +98,12 @@ namespace MemoryManager
       return memory_manager->get_object_size(p);
     }
 
-    void parse_config(const char *config_file)
-    {
-      bool parsed = config_parser.parse(config_file);
-      assert(parsed);
-      memory_manager->load_config(&config_parser);
-    }
-
   private:
     static IMemoryManager *memory_manager;
     static IReferenceModule *ref_module;
-    static ConfigParser config_parser;
   };
 
   extern Manager manager;
   inline IMemoryManager *Manager::memory_manager = nullptr;
   inline IReferenceModule *Manager::ref_module = nullptr;
-  inline ConfigParser Manager::config_parser;
 }

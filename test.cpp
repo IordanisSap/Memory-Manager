@@ -1,6 +1,6 @@
 #include "tests/test.hpp"
 #include <cassert>
-#include "MemoryManager/MemoryManager.hpp"
+#include "MemoryManager.hpp"
 
 int main()
 {

@@ -1,17 +1,18 @@
 # Define the compiler
 CXX = g++
 
+INCDIR = include
+
 # -g -pg 
-CXXFLAGS =  -g -std=c++20
+CXXFLAGS =  -g -std=c++20 -I$(INCDIR)
 
 
 # Define the target executable name
 TARGET = test
 
 # Append .cpp files from subdirectories
-SRCS := $(wildcard MemoryManager/CustomAllocator/*.cpp)
-SRCS += $(wildcard MemoryManager/*.cpp)
-SRCS += $(wildcard MemoryManager/BitmapMemoryManager/*.cpp)
+SRCS += $(wildcard src/*.cpp)
+SRCS += $(wildcard src/BitmapMemoryManager/*.cpp)
 SRCS += $(wildcard tests/*.cpp)
 SRCS += $(wildcard *.cpp) 
 

@@ -6,7 +6,7 @@
 #include "../BlockHeader.hpp"
 #include <stdint.h>
 #include <cstddef>
-#include "../../config.hpp"
+#include "config.hpp"
 
 namespace BitmapMemoryManager
 {

@@ -1,5 +1,5 @@
-#include "../MemoryManager/ptr/GCptr.hpp"
-#include "../MemoryManager/MemoryManager.hpp"
+#include "GCptr.hpp"
+#include "MemoryManager.hpp"
 #include <chrono>
 #include <iostream>
 #include "test.hpp"

@@ -2,4 +2,4 @@
 
 #define BLOCK_SIZE 512
 #define BLOCK_NUM 1024
-#define DEBUG TRUE
+#define DEBUG true

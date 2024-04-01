@@ -1,9 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include "../MemoryManager.hpp"
-#include "../Errors.hpp"
-#include "ptr.hpp"
+#include "MemoryManager.hpp"
+#include "../src/Errors.hpp"
+#include "../src/ptr.hpp"
 
 namespace MemoryManager
 {

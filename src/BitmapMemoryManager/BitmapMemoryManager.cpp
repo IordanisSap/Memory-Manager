@@ -120,6 +120,8 @@ namespace BitmapMemoryManager
         {
             set_bit(bitmap, i, false);
         }
+
+        if (DEBUG) memset(block_start, 0, size);
         print_bitmap();
     }
 

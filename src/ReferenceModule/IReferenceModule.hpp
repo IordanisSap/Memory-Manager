@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "../ptr/ptr.hpp"
+#include "../ptr.hpp"
 #include <list>
 
 namespace MemoryManager

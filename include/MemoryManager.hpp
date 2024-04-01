@@ -1,13 +1,13 @@
 #pragma once
 
 #include <vector>
-#include "IMemoryManager.hpp"
-#include "BitmapMemoryManager/BitmapMemoryManager.hpp"
+#include "../src/IMemoryManager.hpp"
+#include "../src/BitmapMemoryManager/BitmapMemoryManager.hpp"
 #include <stddef.h>
 #include <cassert>
 #include <iostream>
-#include "ReferenceModule/BlockReferenceModule.hpp"
-#include "Errors.hpp"
+#include "../src/ReferenceModule/BlockReferenceModule.hpp"
+#include "../src/Errors.hpp"
 
 namespace MemoryManager
 {

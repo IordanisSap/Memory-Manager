@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
-#include "../MemoryManager/MemoryManager.hpp"
-#include "../MemoryManager/ptr/GCptr.hpp"
+#include "MemoryManager.hpp"
+#include "GCptr.hpp"
 #include "test.hpp"
 
 using namespace std::chrono;

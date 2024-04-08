@@ -217,7 +217,7 @@ size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitma
     while (i < bitmapSize - 7)
     {
         if (get_num_of_consecutive_zero_bits(bitmap[i]) < size - consecutive && get_bit(bitmap, i + 7))
-        { // Not enough consecutive zeros in the byte and last byte is not empty, so it cant be connected to the next byte
+        { // Not enough consecutive zeros in the byte and last bit is not empty, so it cant be connected to the next byte
             i += 8;
             consecutive = 0;
             continue;

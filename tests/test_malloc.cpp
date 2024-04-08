@@ -5,14 +5,14 @@
 
 using namespace std::chrono;
 
-#define MALLOC_TEST_COUNT 100000
+#define ALLOC_TEST_COUNT 100000
 
 
 void test_custom_allocator()
 {
     auto start = high_resolution_clock::now();
 
-    for (size_t i = 0; i < MALLOC_TEST_COUNT; i++)
+    for (size_t i = 0; i < ALLOC_TEST_COUNT; i++)
     {
         MemoryManager::GCptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>();
         MemoryManager::GCptr<SmallTest> t2 = MemoryManager::manager.allocate<SmallTest>();
@@ -26,7 +26,7 @@ void test_custom_allocator()
 void test_custom_allocator_array()
 {
     auto start = high_resolution_clock::now();
-    for (size_t i = 0; i < MALLOC_TEST_COUNT; i++)
+    for (size_t i = 0; i < ALLOC_TEST_COUNT; i++)
     {
         MemoryManager::GCptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>(400);
         MemoryManager::GCptr<SmallTest> t2 = MemoryManager::manager.allocate<SmallTest>(400);
@@ -36,10 +36,10 @@ void test_custom_allocator_array()
     std::cout << "Custom allocator array time: " << duration.count() << " microseconds" << std::endl;
 }
 
-void test_normal_malloc()
+void test_normal_alloc()
 {
     auto start = high_resolution_clock::now();
-    for (size_t i = 0; i < MALLOC_TEST_COUNT; i++)
+    for (size_t i = 0; i < ALLOC_TEST_COUNT; i++)
     {
         SmallTest *t1 = new SmallTest();
         SmallTest *t2 = new SmallTest();
@@ -51,13 +51,13 @@ void test_normal_malloc()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "Malloc time for object: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "alloc time for object: " << duration.count() << " microseconds" << std::endl;
 }
 
-void test_normal_malloc_array()
+void test_normal_alloc_array()
 {
     auto start = high_resolution_clock::now();
-    for (size_t i = 0; i < MALLOC_TEST_COUNT; i++)
+    for (size_t i = 0; i < ALLOC_TEST_COUNT; i++)
     {
         SmallTest *t1 = new SmallTest[400];
         SmallTest *t2 = new SmallTest[400];
@@ -67,17 +67,17 @@ void test_normal_malloc_array()
     }
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "Malloc time for object array: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "alloc time for object array: " << duration.count() << " microseconds" << std::endl;
 }
 
 
 
-bool test_malloc()
+bool test_alloc()
 {
-    std::cout << "----------Running malloc tests-------------" << std::endl;
-    test_normal_malloc();
+    std::cout << "----------Running alloc tests-------------" << std::endl;
+    test_normal_alloc();
     test_custom_allocator();
-    test_normal_malloc_array();
+    test_normal_alloc_array();
     test_custom_allocator_array();
     return true;
 }

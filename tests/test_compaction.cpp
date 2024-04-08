@@ -62,7 +62,7 @@ void test_normal()
     delete[] big;
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "Malloc time: " << duration.count() << " microseconds" << std::endl;
+    std::cout << "alloc time: " << duration.count() << " microseconds" << std::endl;
 }
 
 bool test_compaction()

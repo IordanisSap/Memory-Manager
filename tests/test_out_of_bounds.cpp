@@ -56,6 +56,8 @@ bool test_out_of_bounds_general()
 
     t2[15]->b[0] = 10;
 
+    t1[9]->a = 10;
+
     try
     {
         MemoryManager::GCptr<SmallTest> t5 = t1[10]; // Should fail

@@ -1,5 +1,4 @@
 #include "GCptr.hpp"
-#include "../src/ptr.hpp"
 #include "MemoryManager.hpp"
 #include "test.hpp"
 #include "config.hpp"
@@ -30,7 +29,7 @@ bool test_ref_2()
         return true;
 
     MemoryManager::GCptr<int> int_single = MemoryManager::manager.allocate<int>();
-    void *untracked_ref = reinterpret_cast<ptr *>(&int_single)->block;
+    void *untracked_ref = int_single.operator->();
 
     *int_single = 5;
     bool is5 = *static_cast<int *>(untracked_ref) == 5;

@@ -1,4 +1,4 @@
-#include "BitmapMemoryManager.hpp"
+#include "BitmapAllocator.hpp"
 #include <iostream>
 #include <stddef.h>
 #include <cstdint>
@@ -48,9 +48,9 @@ inline unsigned char num_of_nonzero_bits(uint8_t byte)
     return count;
 }
 
-namespace BitmapMemoryManager
+namespace BitmapAllocator
 {
-    MemoryManager::MemoryManager()
+    MemoryAllocator::MemoryAllocator()
     {
         bitmap = new uint8_t[this->size / 8 + (this->size % 8 != 0)];
         for (size_t i = 0; i < this->size; ++i)
@@ -60,7 +60,7 @@ namespace BitmapMemoryManager
         arena = new std::byte[this->size * this->block_size];
     }
 
-    void *MemoryManager::allocate(size_t size)
+    void *MemoryAllocator::allocate(size_t size)
     {
         size_t i = 0;
         size_t totalSize = size + HEADER_SIZE;
@@ -107,7 +107,7 @@ namespace BitmapMemoryManager
         return nullptr;
     }
 
-    void MemoryManager::deallocate(void *p)
+    void MemoryAllocator::deallocate(void *p)
     {
         std::byte *block_start = static_cast<std::byte *>(p) - HEADER_SIZE;
         ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(block_start);
@@ -125,18 +125,18 @@ namespace BitmapMemoryManager
         print_bitmap();
     }
 
-    bool MemoryManager::is_valid_object(void *p) const
+    bool MemoryAllocator::is_valid_object(void *p) const
     {
         return true;
         return p >= arena && p < arena + this->get_size() * this->block_size;
     }
 
-    bool MemoryManager::is_valid_object_offset(void *p, size_t offset) const
+    bool MemoryAllocator::is_valid_object_offset(void *p, size_t offset) const
     {
         return is_valid_object(p) && reinterpret_cast<ReferenceCountedBlockHeader *>(static_cast<std::byte *>(p) - HEADER_SIZE)->get_size() - HEADER_SIZE > offset;
     }
 
-    size_t MemoryManager::get_object_size(void *p) const
+    size_t MemoryAllocator::get_object_size(void *p) const
     {
         if (!is_valid_object(p))
         {
@@ -146,7 +146,7 @@ namespace BitmapMemoryManager
         return header->get_size() - HEADER_SIZE;
     }
 
-    void *MemoryManager::compact()
+    void *MemoryAllocator::compact()
     {
         size_t i = 0;
         std::byte *pos = arena;
@@ -193,7 +193,7 @@ namespace BitmapMemoryManager
         return arena;
     }
 
-    void MemoryManager::print_bitmap() const
+    void MemoryAllocator::print_bitmap() const
     {
         if (!LOGGING)
             return;
@@ -204,7 +204,7 @@ namespace BitmapMemoryManager
         std::cout << std::endl;
     }
 
-    MemoryManager::~MemoryManager()
+    MemoryAllocator::~MemoryAllocator()
     {
         delete[] (arena);
     }

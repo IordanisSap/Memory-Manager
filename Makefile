@@ -9,7 +9,7 @@ CXXFLAGS = -g -std=c++20 -I$(INCDIR)
 TARGET = test
 
 SRCS += $(wildcard src/*.cpp)
-SRCS += $(wildcard src/BitmapMemoryManager/*.cpp)
+SRCS += $(wildcard src/BitmapAllocator/*.cpp)
 SRCS += $(wildcard tests/*.cpp)
 SRCS += $(wildcard *.cpp) 
 

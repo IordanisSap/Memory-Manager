@@ -1,20 +1,20 @@
 #pragma once
 
 #include <vector>
-#include "../IMemoryManager.hpp"
+#include "../IMemoryAllocator.hpp"
 #include <stddef.h>
 #include "../BlockHeader.hpp"
 #include <stdint.h>
 #include <cstddef>
 #include "config.hpp"
 
-namespace BitmapMemoryManager
+namespace BitmapAllocator
 {
-  class MemoryManager : public IMemoryManager
+  class MemoryAllocator : public IMemoryAllocator
   {
   public:
-    MemoryManager();
-    ~MemoryManager();
+    MemoryAllocator();
+    ~MemoryAllocator();
     virtual void *allocate(size_t size);
     virtual void deallocate(void *p);
     virtual bool is_valid_object(void *p) const;

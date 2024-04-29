@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "../src/IMemoryManager.hpp"
-#include "../src/BitmapMemoryManager/BitmapMemoryManager.hpp"
+#include "../src/IMemoryAllocator.hpp"
+#include "../src/BitmapAllocator/BitmapAllocator.hpp"
 #include <stddef.h>
 #include <cassert>
 #include <iostream>
@@ -16,7 +16,7 @@ namespace MemoryManager
   public:
     Manager()
     {
-      memory_manager = new BitmapMemoryManager::MemoryManager();
+      memory_manager = new BitmapAllocator::MemoryAllocator();
       ref_module = new BlockReferenceModule();
     }
 
@@ -99,11 +99,11 @@ namespace MemoryManager
     }
 
   private:
-    static IMemoryManager *memory_manager;
+    static IMemoryAllocator *memory_manager;
     static IReferenceModule *ref_module;
   };
 
   extern Manager manager;
-  inline IMemoryManager *Manager::memory_manager = nullptr;
+  inline IMemoryAllocator *Manager::memory_manager = nullptr;
   inline IReferenceModule *Manager::ref_module = nullptr;
 }

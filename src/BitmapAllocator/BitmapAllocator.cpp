@@ -10,7 +10,6 @@
 
 #include <bit>
 
-#define LOGGING false
 #define get_num_of_set_bits(byte) std::popcount(byte)
 #define get_num_of_consecutive_zero_bits(byte) std::countr_zero(byte)
 
@@ -183,7 +182,7 @@ namespace BitmapAllocator
                 }
                 pos += blocksNeeded * this->block_size;
                 i += blocksNeeded;
-                if (LOGGING)
+                if (LOG)
                     print_bitmap();
                 continue;
             }
@@ -195,7 +194,7 @@ namespace BitmapAllocator
 
     void MemoryAllocator::print_bitmap() const
     {
-        if (!LOGGING)
+        if (!LOG)
             return;
         for (size_t i = 0; i < this->get_size(); ++i)
         {

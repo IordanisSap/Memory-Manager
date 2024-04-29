@@ -5,7 +5,7 @@
 
 using namespace std::chrono;
 
-#define ALLOC_TEST_COUNT 100000
+#define ALLOC_TEST_COUNT 500000
 
 
 void test_custom_allocator()

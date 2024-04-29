@@ -38,6 +38,8 @@ namespace MemoryManager
         T &operator*() { return *(static_cast<T*>(m_ptr.block) + offset); }
         GCptr operator+(int i) { return GCptr(static_cast<T*>(m_ptr.block), offset + i); }
         GCptr operator-(int i) { return GCptr(static_cast<T*>(m_ptr.block), offset - i); }
+        GCptr operator++() { return GCptr(static_cast<T*>(m_ptr.block), offset + 1); }
+        GCptr operator--() { return GCptr(static_cast<T*>(m_ptr.block), offset - 1); }
         GCptr operator[](int i) { return GCptr(static_cast<T*>(m_ptr.block), offset + i); }
         GCptr<T> &operator=(const GCptr<T> &other) // Overloading assignment operator
         {

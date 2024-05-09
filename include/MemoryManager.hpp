@@ -24,7 +24,7 @@ namespace MemoryManager
     T *allocate(size_t size)
     {
       void *ptr = memory_manager->allocate(size * sizeof(T));
-      if (ptr == nullptr)
+      if (ptr == nullptr && ENABLE_EXPERIMENTAL_COMPACTION)
       {
         memory_manager->compact();
         ptr = memory_manager->allocate(size * sizeof(T));
@@ -42,7 +42,7 @@ namespace MemoryManager
     T *allocate()
     {
       void *ptr = memory_manager->allocate(sizeof(T));
-      if (ptr == nullptr)
+      if (ptr == nullptr && ENABLE_EXPERIMENTAL_COMPACTION)
       {
         memory_manager->compact();
         ptr = memory_manager->allocate(sizeof(T));

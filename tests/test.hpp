@@ -5,8 +5,6 @@
 class SmallTest 
 {
 public:
-    SmallTest() {}
-    ~SmallTest() {}
     int a = 1;
 
 private:
@@ -17,8 +15,6 @@ private:
 class BigTest
 {
 public:
-    BigTest() {}
-    ~BigTest() {}
     int b[50];
 };
 

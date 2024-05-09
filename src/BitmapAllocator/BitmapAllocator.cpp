@@ -149,8 +149,8 @@ namespace BitmapAllocator
     {
         size_t i = 0;
         std::byte *pos = arena;
-        size_t arenaBlockSize = this->get_size();
-        while (i < arenaBlockSize)
+        size_t arenaBlockNum = this->get_size();
+        while (i < arenaBlockNum)
         {
             if (!get_bit(bitmap, i))
             {
@@ -161,9 +161,10 @@ namespace BitmapAllocator
             {
                 ReferenceCountedBlockHeader *header = reinterpret_cast<ReferenceCountedBlockHeader *>(arena + i * this->block_size);
                 size_t size = header->get_size();
-                auto references = header->get_references();
 
-                *reinterpret_cast<ReferenceCountedBlockHeader *>(pos) = std::move(*header);
+                new (pos) ReferenceCountedBlockHeader(std::move(*header));
+                std::memmove(pos + HEADER_SIZE, arena + i * this->block_size + HEADER_SIZE, size - HEADER_SIZE);
+                auto references = reinterpret_cast<ReferenceCountedBlockHeader *>(pos)->get_references();
 
                 for (auto &ref : references)
                 {
@@ -182,8 +183,7 @@ namespace BitmapAllocator
                 }
                 pos += blocksNeeded * this->block_size;
                 i += blocksNeeded;
-                if (LOG)
-                    print_bitmap();
+                print_bitmap();
                 continue;
             }
             pos += this->block_size;

@@ -15,7 +15,7 @@ inline void throw_error(Func func,const char* file, long line, Args&&... args) {
 
 inline void out_of_memory_error()
 {
-    std::cerr << "Out of memory" << std::endl;
+    throw std::runtime_error("Out of memory");
 }
 inline void invalid_block_error()
 {

@@ -4,10 +4,11 @@
 #include <random>
 #include <iostream>
 #include <chrono>
+#include "config.hpp"
 
 #include <bit>
 
-#define test_count 32
+#define test_count BLOCK_NUM
 
 using namespace std::chrono;
 

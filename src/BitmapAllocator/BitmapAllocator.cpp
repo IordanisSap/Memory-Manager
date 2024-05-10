@@ -10,10 +10,12 @@
 
 #include <bit>
 
-#define get_num_of_set_bits(byte) std::popcount(byte)
+#define byte_has_zero_bits(byte) byte != 0xFF
 #define get_num_of_consecutive_zero_bits(byte) std::countr_zero(byte)
 
-size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitmapSize);
+size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t start, size_t end);
+size_t find_index_for_single_block(uint8_t *&bitmap, size_t start, size_t end);
+size_t find_index_by_bit(uint8_t *bitmap, size_t start, size_t end);
 
 void set_bit(uint8_t *bitmap, size_t index, bool value)
 {
@@ -61,19 +63,30 @@ namespace BitmapAllocator
 
     void *MemoryAllocator::allocate(size_t size)
     {
-        size_t i = 0;
+        // Used by NEXT_FIT policy
+        static size_t start = 0;
+
+#ifdef FIRST_FIT
+        start = 0;
+#endif
+
+        size_t i = start;
         size_t totalSize = size + HEADER_SIZE;
 
         if (totalSize > this->block_size)
         {
             size_t blocksNeeded = totalSize / this->block_size + (totalSize % this->block_size == 0 ? 0 : 1);
-            size_t index = find_index_for_block_sequence(blocksNeeded, bitmap, this->get_size());
+            size_t index = find_index_for_block_sequence(blocksNeeded, bitmap, i, this->get_size());
+            if (index >= this->get_size())
+                index =  find_index_for_block_sequence(blocksNeeded, bitmap, 0, start);
             if (index < this->get_size())
             {
-                for (size_t j = index; j < index + blocksNeeded; ++j)
+                size_t j = index;
+                for (; j < index + blocksNeeded; ++j)
                 {
                     set_bit(bitmap, j, true);
                 }
+                start = j % this->get_size();
                 print_bitmap();
                 size_t byteOffset = index * this->block_size;
                 new (arena + byteOffset) ReferenceCountedBlockHeader(totalSize);
@@ -86,24 +99,18 @@ namespace BitmapAllocator
         }
 
         // Fits in 1 block
-        while (i < this->get_size())
-        {
-            // auto tmp = get_num_of_set_bits(bitmap[i]);
-            if (get_num_of_set_bits(bitmap[i]) == 8)
-            {
-                i += 8;
-                continue;
-            }
-            while (get_bit(bitmap, i))
-            {
-                ++i;
-            }
-            set_bit(bitmap, i, true);
-            print_bitmap();
-            new (arena + i * this->block_size) ReferenceCountedBlockHeader(totalSize);
-            return arena + i * this->block_size + HEADER_SIZE;
-        }
-        return nullptr;
+        i = find_index_for_single_block(bitmap, start, this->get_size());
+        if (i >= this->get_size())
+            i = find_index_for_single_block(bitmap, 0, start);
+
+        if (i >= this->get_size())
+            return nullptr;
+
+        set_bit(bitmap, i, true);
+        start = (i + 1) % this->get_size();
+        print_bitmap();
+        new (arena + i * this->block_size) ReferenceCountedBlockHeader(totalSize);
+        return arena + i * this->block_size + HEADER_SIZE;
     }
 
     void MemoryAllocator::deallocate(void *p)
@@ -120,7 +127,8 @@ namespace BitmapAllocator
             set_bit(bitmap, i, false);
         }
 
-        if (DEBUG) memset(block_start, 0, size);
+        if (DEBUG)
+            memset(block_start, 0, size);
         print_bitmap();
     }
 
@@ -209,14 +217,15 @@ namespace BitmapAllocator
     }
 
 }
-size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitmapSize)
+
+size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t start, size_t end)
 {
-    size_t i = 0;
+    size_t i = start;
     size_t consecutive = 0;
-    while (i < bitmapSize - 7)
+    while (i + 7 < end)
     {
-        if (get_num_of_consecutive_zero_bits(bitmap[i]) < size - consecutive && get_bit(bitmap, i + 7))
-        { // Not enough consecutive zeros in the byte and last bit is not empty, so it cant be connected to the next byte
+        if (get_num_of_consecutive_zero_bits(bitmap[i/8]) < size - consecutive && get_bit(bitmap, i + 7))
+        { // Not enough consecutive zeros in the byte and last bit is not 0, so it cant be connected to the next byte
             i += 8;
             consecutive = 0;
             continue;
@@ -229,7 +238,7 @@ size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitma
             return i - size + 1;
         i++;
     }
-    while (i < bitmapSize)
+    while (i < end)
     {
         if (!get_bit(bitmap, i))
             consecutive++;
@@ -239,6 +248,43 @@ size_t find_index_for_block_sequence(size_t size, uint8_t *&bitmap, size_t bitma
             return i - size + 1;
         i++;
     }
+    return SIZE_MAX;
+}
 
+size_t find_index_by_bit(uint8_t *bitmap, size_t start, size_t end)
+{
+    size_t i = start;
+    while (i < end)
+    {
+        if (!get_bit(bitmap, i))
+            return i;
+        i++;
+    }
+    return SIZE_MAX;
+}
+
+
+size_t find_index_for_single_block(uint8_t *&bitmap, size_t start, size_t end)
+{
+    size_t i = start;
+    while (i < end)
+    {
+        if (i + 7 < end)
+        {
+            if (byte_has_zero_bits(bitmap[i/8]))
+            {
+                i = find_index_by_bit(bitmap, i, end);
+                return i;
+            }
+            else
+                i += 8;
+        }
+        else
+        {
+            i = find_index_by_bit(bitmap, i, end);
+            if (i < end)
+                return i;
+        }
+    }
     return SIZE_MAX;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#define BLOCK_SIZE 512
-#define BLOCK_NUM 4096
+#define BLOCK_SIZE 28
+#define BLOCK_NUM 512 //1048576
 #define DEBUG true
 #define LOG false
 // Uncomment only one of the following
@@ -9,4 +9,4 @@
 #define NEXT_FIT
 
 // Experimental
-#define ENABLE_EXPERIMENTAL_COMPACTION true
+#define ENABLE_EXPERIMENTAL_COMPACTION false

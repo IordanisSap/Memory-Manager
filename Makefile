@@ -3,7 +3,7 @@ CXX = g++
 INCDIR = include
 
 # -g for debugging, -pg for profiling
-CXXFLAGS = -g -std=c++20 -I$(INCDIR)
+CXXFLAGS = -std=c++20 -I$(INCDIR)
 
 
 TARGET = test

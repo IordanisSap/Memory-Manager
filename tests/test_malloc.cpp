@@ -30,19 +30,6 @@ void test_custom_allocator()
     std::cout << "Custom allocator time: " << duration.count() << " microseconds" << std::endl;
 }
 
-void test_custom_allocator_array()
-{
-    auto start = high_resolution_clock::now();
-    for (size_t i = 0; i < ALLOC_TEST_COUNT; i++)
-    {
-        MemoryManager::GCptr<SmallTest> t1 = MemoryManager::manager.allocate<SmallTest>(25);
-        MemoryManager::GCptr<SmallTest> t2 = MemoryManager::manager.allocate<SmallTest>(25);
-    }
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "Custom allocator array time: " << duration.count() << " microseconds" << std::endl;
-}
-
 void test_normal_alloc()
 {
     auto start = high_resolution_clock::now();
@@ -63,28 +50,10 @@ void test_normal_alloc()
     std::cout << "alloc time for object: " << duration.count() << " microseconds" << std::endl;
 }
 
-void test_normal_alloc_array()
-{
-    auto start = high_resolution_clock::now();
-    for (size_t i = 0; i < ALLOC_TEST_COUNT; i++)
-    {
-        SmallTest *t1 = new SmallTest[25];
-        SmallTest *t2 = new SmallTest[25];
-
-        delete[] t1;
-        delete[] t2;
-    }
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop - start);
-    std::cout << "alloc time for object array: " << duration.count() << " microseconds" << std::endl;
-}
-
 bool test_alloc()
 {
     std::cout << "----------Running alloc tests-------------" << std::endl;
     test_normal_alloc();
-    // test_custom_allocator();
-    //test_normal_alloc_array();
-    //test_custom_allocator_array();
+    test_custom_allocator();
     return true;
 }
